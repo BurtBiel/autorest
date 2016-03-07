@@ -51,7 +51,7 @@ class SkipUrlEncodingOperations(object):
         path_format_arguments = {
             'unencodedPathParam': self._serialize.url("unencoded_path_param", unencoded_path_param, 'str', skip_quote=True)
         }
-        url = url.format(**path_format_arguments)
+        url = self._client.format_url(url, **path_format_arguments)
 
         # Construct parameters
         query_parameters = {}
@@ -96,7 +96,7 @@ class SkipUrlEncodingOperations(object):
         path_format_arguments = {
             'unencodedPathParam': self._serialize.url("unencoded_path_param", unencoded_path_param, 'str', skip_quote=True)
         }
-        url = url.format(**path_format_arguments)
+        url = self._client.format_url(url, **path_format_arguments)
 
         # Construct parameters
         query_parameters = {}
@@ -123,7 +123,7 @@ class SkipUrlEncodingOperations(object):
             return client_raw_response
 
     def get_swagger_path_valid(
-            self, unencoded_path_param, custom_headers={}, raw=False, **operation_config):
+            self, unencoded_path_param="path1/path2/path3", custom_headers={}, raw=False, **operation_config):
         """
         Get method with unencoded path parameter with value 'path1/path2/path3'
 
@@ -141,7 +141,7 @@ class SkipUrlEncodingOperations(object):
         path_format_arguments = {
             'unencodedPathParam': self._serialize.url("unencoded_path_param", unencoded_path_param, 'str', skip_quote=True)
         }
-        url = url.format(**path_format_arguments)
+        url = self._client.format_url(url, **path_format_arguments)
 
         # Construct parameters
         query_parameters = {}
@@ -296,7 +296,7 @@ class SkipUrlEncodingOperations(object):
             return client_raw_response
 
     def get_swagger_query_valid(
-            self, q1, custom_headers={}, raw=False, **operation_config):
+            self, q1="value1&q2=value2&q3=value3", custom_headers={}, raw=False, **operation_config):
         """
         Get method with unencoded query parameter with value
         'value1&q2=value2&q3=value3'

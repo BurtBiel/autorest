@@ -726,6 +726,14 @@ describe('nodejs', function () {
           done();
         });
       });
+
+      it('should put local positive offset max Date', function (done) {
+        testClient.datetime.putLocalPositiveOffsetMaxDateTime('9999-12-31t23:59:59.9999999+14:00', function (error, result) {
+          should.not.exist(error);
+          should.not.exist(result);
+          done();
+        });
+      });
     });
 
     describe('DateTimeRfc1123 Client', function () {
@@ -1002,12 +1010,26 @@ describe('nodejs', function () {
           });
         });
 
+        it('should get and put uuid arrays', function (done) {
+            var testArray = ["6dcc7237-45fe-45c4-8a6b-3a8a3f625652", "d1399005-30f7-40d6-8da6-dd7c89ad34db", "f42f6aa1-a5bc-4ddf-907e-5f915de43205"];
+            testClient.arrayModel.getUuidValid(function (error, result) {
+                should.not.exist(error);
+                assert.deepEqual(result, testArray);
+                testClient.arrayModel.putUuidValid(testArray, function (error, result) {
+                    should.not.exist(error);
+                    testClient.arrayModel.getUuidInvalidChars(function (error, result) {
+                        should.not.exist(error);
+                        done();
+                    });
+                });
+            });
+        });
+
         it('should get and put date arrays', function (done) {
           var testArray = [new Date('2000-12-01'), new Date('1980-01-02'), new Date('1492-10-12')];
           testClient.arrayModel.getDateValid(function (error, result) {
             should.not.exist(error);
             assert.deepEqual(result, testArray);
-            //TODO, 4213536: Fix date serialization
             testClient.arrayModel.putDateValid(testArray, function (error, result) {
               should.not.exist(error);
             testClient.arrayModel.getDateInvalidNull(function (error, result) {
@@ -1772,6 +1794,20 @@ describe('nodejs', function () {
             should.exist(error);
             done();
           });
+        });
+      });
+
+      it('should work when path has date', function (done) {
+        testClient.paths.dateValid(function (error, result) {
+          should.not.exist(error);
+          done();
+        });
+      });
+
+      it('should work when query has date', function (done) {
+        testClient.queries.dateValid(function (error, result) {
+          should.not.exist(error);
+          done();
         });
       });
 

@@ -101,7 +101,7 @@ namespace Microsoft.Rest.Generator.NodeJS
 
         public override string GetPropertyName(string name)
         {
-            return CamelCase(name);
+            return CamelCase(RemoveInvalidCharacters(name));
         }
 
         public override string GetMethodName(string name)
@@ -139,7 +139,6 @@ namespace Microsoft.Rest.Generator.NodeJS
                 {
                     method.Group = method.Group.ToCamelCase();
                 }
-                var scope = new ScopeProvider();
                 foreach (var parameter in method.Parameters)
                 {
                     if (parameter.ClientProperty != null)
@@ -148,10 +147,6 @@ namespace Microsoft.Rest.Generator.NodeJS
                             "{0}.{1}",
                             method.Group == null ? "this" : "this.client",
                             parameter.ClientProperty.Name);
-                    }
-                    else
-                    {
-                        parameter.Name = scope.GetVariableName(parameter.Name);
                     }
                 }
             }
@@ -273,6 +268,11 @@ namespace Microsoft.Rest.Generator.NodeJS
             foreach (var property in compositeType.Properties)
             {
                 property.Name = GetPropertyName(property.Name);
+                if (property.SerializedName != null && !property.WasFlattened())
+                {
+                    property.SerializedName = property.SerializedName.Replace(".", "\\\\.");
+                }
+                
                 property.Type = NormalizeTypeReference(property.Type);
             }
 
@@ -333,6 +333,10 @@ namespace Microsoft.Rest.Generator.NodeJS
             else if (primaryType.Type == KnownPrimaryType.TimeSpan)
             {
                 primaryType.Name = "moment.duration"; 
+            }
+            else if (primaryType.Type == KnownPrimaryType.Uuid)
+            {
+                primaryType.Name = "Uuid";
             }
             else if (primaryType.Type == KnownPrimaryType.Object)
             {

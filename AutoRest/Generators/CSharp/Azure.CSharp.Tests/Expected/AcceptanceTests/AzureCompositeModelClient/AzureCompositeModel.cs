@@ -109,6 +109,11 @@ namespace Fixtures.AcceptanceTestsAzureCompositeModelClient
         public virtual IPolymorphicrecursiveOperations Polymorphicrecursive { get; private set; }
 
         /// <summary>
+        /// Gets the IReadonlypropertyOperations.
+        /// </summary>
+        public virtual IReadonlypropertyOperations Readonlyproperty { get; private set; }
+
+        /// <summary>
         /// Initializes a new instance of the AzureCompositeModel class.
         /// </summary>
         /// <param name='handlers'>
@@ -294,6 +299,7 @@ namespace Fixtures.AcceptanceTestsAzureCompositeModelClient
             this.Inheritance = new InheritanceOperations(this);
             this.Polymorphism = new PolymorphismOperations(this);
             this.Polymorphicrecursive = new PolymorphicrecursiveOperations(this);
+            this.Readonlyproperty = new ReadonlypropertyOperations(this);
             this.BaseUri = new Uri("http://localhost");
             this.SubscriptionId = "123456";
             this.AcceptLanguage = "en-US";
@@ -312,7 +318,6 @@ namespace Fixtures.AcceptanceTestsAzureCompositeModelClient
                         new Iso8601TimeSpanConverter()
                     }
             };
-            SerializationSettings.Converters.Add(new ResourceJsonConverter()); 
             DeserializationSettings = new JsonSerializerSettings
             {
                 DateFormatHandling = DateFormatHandling.IsoDateFormat,
@@ -327,7 +332,6 @@ namespace Fixtures.AcceptanceTestsAzureCompositeModelClient
             };
             SerializationSettings.Converters.Add(new PolymorphicSerializeJsonConverter<Fish>("fishtype"));
             DeserializationSettings.Converters.Add(new PolymorphicDeserializeJsonConverter<Fish>("fishtype"));
-            DeserializationSettings.Converters.Add(new ResourceJsonConverter()); 
             DeserializationSettings.Converters.Add(new CloudErrorJsonConverter()); 
         }    
         /// <summary>

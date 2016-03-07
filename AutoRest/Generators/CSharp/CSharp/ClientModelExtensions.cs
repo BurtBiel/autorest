@@ -121,7 +121,7 @@ namespace Microsoft.Rest.Generator.CSharp
                         .Where(p => p.Type is CompositeType)
                         .ForEach(cp => typesToValidate.Push(cp.Type));
 
-                    if (composite.Properties.Any(p => p.IsRequired || p.Constraints.Any()))
+                    if (composite.Properties.Any(p => (p.IsRequired && !p.IsConstant) || p.Constraints.Any()))
                     {
                         return true;
                     }
@@ -263,7 +263,8 @@ namespace Microsoft.Rest.Generator.CSharp
                 || primaryType.Type == KnownPrimaryType.Int 
                 || primaryType.Type == KnownPrimaryType.Long 
                 || primaryType.Type == KnownPrimaryType.TimeSpan 
-                || primaryType.Type == KnownPrimaryType.DateTimeRfc1123));
+                || primaryType.Type == KnownPrimaryType.DateTimeRfc1123
+                || primaryType.Type == KnownPrimaryType.Uuid));
         }
 
         public static string CheckNull(string valueReference, string executionBlock)
@@ -310,7 +311,7 @@ namespace Microsoft.Rest.Generator.CSharp
 
             if (sequence != null && sequence.ShouldValidateChain())
             {
-                var elementVar = scope.GetVariableName("element");
+                var elementVar = scope.GetUniqueName("element");
                 var innerValidation = sequence.ElementType.ValidateType(scope, elementVar, null);
                 if (!string.IsNullOrEmpty(innerValidation))
                 {
@@ -322,7 +323,7 @@ namespace Microsoft.Rest.Generator.CSharp
             }
             else if (dictionary != null && dictionary.ShouldValidateChain())
             {
-                var valueVar = scope.GetVariableName("valueElement");
+                var valueVar = scope.GetUniqueName("valueElement");
                 var innerValidation = dictionary.ValueType.ValidateType(scope, valueVar, null);
                 if (!string.IsNullOrEmpty(innerValidation))
                 {

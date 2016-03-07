@@ -37,7 +37,7 @@ namespace Microsoft.Rest.Generator.CSharp
         public override string Description
         {
             // TODO resource string.
-            get { return "C# for Http Client Libraries"; }
+            get { return "Generic C# code generator."; }
         }
 
         public override string UsageInstructions
@@ -102,11 +102,14 @@ namespace Microsoft.Rest.Generator.CSharp
             await Write(serviceClientTemplate, serviceClient.Name + ".cs");
 
             // Service client extensions
-            var extensionsTemplate = new ExtensionsTemplate
+            if (serviceClient.Methods.Any(m => m.Group == null))
             {
-                Model = new ExtensionsTemplateModel(serviceClient, null),
-            };
-            await Write(extensionsTemplate, serviceClient.Name + "Extensions.cs");
+                var extensionsTemplate = new ExtensionsTemplate
+                {
+                    Model = new ExtensionsTemplateModel(serviceClient, null),
+                };
+                await Write(extensionsTemplate, serviceClient.Name + "Extensions.cs");
+            }
 
             // Service client interface
             var serviceClientInterfaceTemplate = new ServiceClientInterfaceTemplate
