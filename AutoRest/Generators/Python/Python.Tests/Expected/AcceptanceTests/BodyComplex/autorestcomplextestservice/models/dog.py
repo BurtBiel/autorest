@@ -15,9 +15,12 @@ from .pet import Pet
 class Dog(Pet):
     """Dog
 
-    :param int id:
-    :param str name:
-    :param str food:
+    :param id:
+    :type id: int
+    :param name:
+    :type name: str
+    :param food:
+    :type food: str
     """ 
 
     _attribute_map = {
@@ -26,6 +29,6 @@ class Dog(Pet):
         'food': {'key': 'food', 'type': 'str'},
     }
 
-    def __init__(self, id=None, name=None, food=None, **kwargs):
-        super(Dog, self).__init__(id=id, name=name, **kwargs)
+    def __init__(self, id=None, name=None, food=None):
+        super(Dog, self).__init__(id=id, name=name)
         self.food = food

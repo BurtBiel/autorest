@@ -10,10 +10,14 @@ class Endpoints(Model):
     The URIs that are used to perform a retrieval of a public blob, queue or
     table object.
 
-    :param str blob: Gets the blob endpoint.
-    :param str queue: Gets the queue endpoint.
-    :param str table: Gets the table endpoint.
-    :param str file: Gets the file endpoint.
+    :param blob: Gets the blob endpoint.
+    :type blob: str
+    :param queue: Gets the queue endpoint.
+    :type queue: str
+    :param table: Gets the table endpoint.
+    :type table: str
+    :param file: Gets the file endpoint.
+    :type file: str
     """ 
 
     _attribute_map = {
@@ -23,7 +27,7 @@ class Endpoints(Model):
         'file': {'key': 'file', 'type': 'str'},
     }
 
-    def __init__(self, blob=None, queue=None, table=None, file=None, **kwargs):
+    def __init__(self, blob=None, queue=None, table=None, file=None):
         self.blob = blob
         self.queue = queue
         self.table = table

@@ -15,12 +15,13 @@ from msrest.serialization import Model
 class ByteWrapper(Model):
     """ByteWrapper
 
-    :param bytearray field:
+    :param field:
+    :type field: bytearray
     """ 
 
     _attribute_map = {
         'field': {'key': 'field', 'type': 'bytearray'},
     }
 
-    def __init__(self, field=None, **kwargs):
+    def __init__(self, field=None):
         self.field = field

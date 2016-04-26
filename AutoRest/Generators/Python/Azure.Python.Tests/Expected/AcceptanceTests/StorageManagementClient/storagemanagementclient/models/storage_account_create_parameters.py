@@ -16,17 +16,29 @@ class StorageAccountCreateParameters(Resource):
     """
     The parameters to provide for the account.
 
-    :param str id: Resource Id
-    :param str name: Resource name
-    :param str type: Resource type
-    :param str location: Resource location
-    :param dict tags: Resource tags
-    :param str account_type: Gets or sets the account type. Possible values
+    Variables are only populated by the server, and will be ignored when
+    sending a request.
+
+    :ivar id: Resource Id
+    :vartype id: str
+    :ivar name: Resource name
+    :vartype name: str
+    :ivar type: Resource type
+    :vartype type: str
+    :param location: Resource location
+    :type location: str
+    :param tags: Resource tags
+    :type tags: dict
+    :param account_type: Gets or sets the account type. Possible values
      include: 'Standard_LRS', 'Standard_ZRS', 'Standard_GRS',
      'Standard_RAGRS', 'Premium_LRS'
+    :type account_type: str
     """ 
 
     _validation = {
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'type': {'readonly': True},
         'location': {'required': True},
     }
 
@@ -39,6 +51,6 @@ class StorageAccountCreateParameters(Resource):
         'account_type': {'key': 'properties.accountType', 'type': 'AccountType'},
     }
 
-    def __init__(self, location, id=None, name=None, type=None, tags=None, account_type=None, **kwargs):
-        super(StorageAccountCreateParameters, self).__init__(id=id, name=name, type=type, location=location, tags=tags, **kwargs)
+    def __init__(self, location, tags=None, account_type=None):
+        super(StorageAccountCreateParameters, self).__init__(location=location, tags=tags)
         self.account_type = account_type

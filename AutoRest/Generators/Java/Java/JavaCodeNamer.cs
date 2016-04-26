@@ -8,24 +8,32 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Microsoft.Rest.Generator.ClientModel;
 using Microsoft.Rest.Generator.Utilities;
+using Microsoft.Rest.Generator.Java.TemplateModels;
 
 namespace Microsoft.Rest.Generator.Java
 {
     public class JavaCodeNamer : CodeNamer
     {
-        private readonly HashSet<IType> _normalizedTypes;
+        private Dictionary<IType, IType> _visited = new Dictionary<IType, IType>();
+
+        public const string ExternalExtension = "x-ms-external";
 
         public static HashSet<string> PrimaryTypes { get; private set; }
 
         public static HashSet<string> JavaBuiltInTypes { get; private set; }
 
+        protected string _package;
+
+        #region constructor
+
         /// <summary>
         /// Initializes a new instance of CSharpCodeNamingFramework.
         /// </summary>
-        public JavaCodeNamer()
+        public JavaCodeNamer(string nameSpace)
         {
             // List retrieved from 
             // http://docs.oracle.com/javase/tutorial/java/nutsandbolts/_keywords.html
+            _package = nameSpace.ToLower(CultureInfo.InvariantCulture);
             new HashSet<string>
             {
                 "abstract", "assert",   "boolean",  "break",    "byte",
@@ -42,7 +50,6 @@ namespace Microsoft.Rest.Generator.Java
                 "period",   "stream",   "string",   "object", "header"
             }.ForEach(s => ReservedWords.Add(s));
 
-            _normalizedTypes = new HashSet<IType>();
             PrimaryTypes = new HashSet<string>();
             new HashSet<string>
             {
@@ -75,6 +82,10 @@ namespace Microsoft.Rest.Generator.Java
                 "byte[]"
             }.ForEach(s => PrimaryTypes.Add(s));
         }
+
+        #endregion
+
+        #region naming
 
         /// <summary>
         /// Skips name collision resolution for method groups (operations) as they get
@@ -145,6 +156,10 @@ namespace Microsoft.Rest.Generator.Java
             return name + "Service";
         }
 
+        #endregion
+
+        #region normalization
+
         public override void NormalizeClientModel(ServiceClient client)
         {
             if (client == null)
@@ -176,6 +191,68 @@ namespace Microsoft.Rest.Generator.Java
                 }
             }
         }
+
+        /// <summary>
+        /// Normalizes the parameter names of a method
+        /// </summary>
+        /// <param name="method"></param>
+        protected override void NormalizeParameters(Method method)
+        {
+            if (method != null)
+            {
+                foreach (var parameter in method.Parameters)
+                {
+                    parameter.Name = method.Scope.GetUniqueName(GetParameterName(parameter.GetClientName()));
+                    parameter.Type = NormalizeTypeReference(parameter.Type);
+                    QuoteParameter(parameter);
+                }
+
+                foreach (var parameterTransformation in method.InputParameterTransformation)
+                {
+                    parameterTransformation.OutputParameter.Name = method.Scope.GetUniqueName(GetParameterName(parameterTransformation.OutputParameter.GetClientName()));
+                    parameterTransformation.OutputParameter.Type = NormalizeTypeReference(parameterTransformation.OutputParameter.Type);
+                    parameterTransformation.OutputParameter = new ParameterModel(parameterTransformation.OutputParameter, method);
+
+                    QuoteParameter(parameterTransformation.OutputParameter);
+
+                    foreach (var parameterMapping in parameterTransformation.ParameterMappings)
+                    {
+                        if (parameterMapping.InputParameterProperty != null)
+                        {
+                            parameterMapping.InputParameterProperty = GetPropertyName(parameterMapping.InputParameterProperty);
+                        }
+
+                        if (parameterMapping.OutputParameterProperty != null)
+                        {
+                            parameterMapping.OutputParameterProperty = GetPropertyName(parameterMapping.OutputParameterProperty);
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Normalizes the client properties names of a client model
+        /// </summary>
+        /// <param name="client">A client model</param>
+        protected override void NormalizeClientProperties(ServiceClient client)
+        {
+            if (client != null)
+            {
+                foreach (var property in client.Properties)
+                {
+                    property.Name = GetPropertyName(property.GetClientName());
+                    property.Type = NormalizeTypeReference(property.Type);
+                    QuoteParameter(property);
+                }
+            }
+        }
+        public override Response NormalizeTypeReference(Response typePair)
+        {
+            return new Response((ITypeModel) NormalizeTypeReference(typePair.Body),
+                                (ITypeModel) NormalizeTypeReference(typePair.Headers));
+        }
+
         public override IType NormalizeTypeDeclaration(IType type)
         {
             return NormalizeTypeReference(type);
@@ -190,35 +267,42 @@ namespace Microsoft.Rest.Generator.Java
             var enumType = type as EnumType;
             if (enumType != null && enumType.ModelAsString)
             {
-                type = new PrimaryType(KnownPrimaryType.String);
+                type = new PrimaryTypeModel(KnownPrimaryType.String);
             }
 
-            // Using Any instead of Contains since object hash is bound to a property which is modified during normalization
-            if (_normalizedTypes.Any(item => type.Equals(item)))
+            if (_visited.ContainsKey(type))
             {
-                return _normalizedTypes.First(item => type.Equals(item));
+                return _visited[type];
             }
 
-            _normalizedTypes.Add(type);
             if (type is PrimaryType)
             {
-                return NormalizePrimaryType(type as PrimaryType);
+                _visited[type] = new PrimaryTypeModel(type as PrimaryType);
+                return _visited[type];
             }
             if (type is SequenceType)
             {
-                return NormalizeSequenceType(type as SequenceType);
+                SequenceTypeModel model = new SequenceTypeModel(type as SequenceType);
+                _visited[type] = model;
+                return NormalizeSequenceType(model);
             }
             if (type is DictionaryType)
             {
-                return NormalizeDictionaryType(type as DictionaryType);
+                DictionaryTypeModel model = new DictionaryTypeModel(type as DictionaryType);
+                _visited[type] = model;
+                return NormalizeDictionaryType(model);
             }
             if (type is CompositeType)
             {
-                return NormalizeCompositeType(type as CompositeType);
+                CompositeTypeModel model = NewCompositeTypeModel(type as CompositeType);
+                _visited[type] = model;
+                return NormalizeCompositeType(model);
             }
             if (type is EnumType)
             {
-                return NormalizeEnumType(type as EnumType);
+                EnumTypeModel model = new EnumTypeModel(type as EnumType, _package);
+                _visited[type] = model;
+                return NormalizeEnumType(model);
             }
 
 
@@ -244,13 +328,18 @@ namespace Microsoft.Rest.Generator.Java
             return enumType;
         }
 
-        private IType NormalizeCompositeType(CompositeType compositeType)
+        protected virtual CompositeTypeModel NewCompositeTypeModel(CompositeType compositeType)
+        {
+            return new CompositeTypeModel(compositeType as CompositeType, _package);
+        }
+
+        protected virtual IType NormalizeCompositeType(CompositeType compositeType)
         {
             compositeType.Name = GetTypeName(compositeType.Name);
 
             foreach (var property in compositeType.Properties)
             {
-                property.Name = GetPropertyName(property.Name);
+                property.Name = GetPropertyName(property.GetClientName());
                 property.Type = NormalizeTypeReference(property.Type);
                 if (!property.IsRequired)
                 {
@@ -261,76 +350,33 @@ namespace Microsoft.Rest.Generator.Java
             return compositeType;
         }
 
-        private static PrimaryType NormalizePrimaryType(PrimaryType primaryType)
+        public static PrimaryTypeModel NormalizePrimaryType(PrimaryType primaryType)
         {
             if (primaryType == null)
             {
                 throw new ArgumentNullException("primaryType");
             }
 
-            if (primaryType.Type == KnownPrimaryType.Boolean)
-            {
-                primaryType.Name = "boolean";
-            }
-            else if (primaryType.Type == KnownPrimaryType.ByteArray)
-            {
-                primaryType.Name = "byte[]";
-            }
-            else if (primaryType.Type == KnownPrimaryType.Date)
-            {
-                primaryType.Name = "LocalDate";
-            }
-            else if (primaryType.Type == KnownPrimaryType.DateTime)
-            {
-                primaryType.Name = "DateTime";
-            }
-            else if (primaryType.Type == KnownPrimaryType.DateTimeRfc1123)
-            {
-                primaryType.Name = "DateTimeRfc1123";
-            }
-            else if (primaryType.Type == KnownPrimaryType.Double)
-            {
-                primaryType.Name = "double";
-            }
-            else if (primaryType.Type == KnownPrimaryType.Decimal)
-            {
-                primaryType.Name = "BigDecimal";
-            }
-            else if (primaryType.Type == KnownPrimaryType.Int)
-            {
-                primaryType.Name = "int";
-            }
-            else if (primaryType.Type == KnownPrimaryType.Long)
-            {
-                primaryType.Name = "long";
-            }
-            else if (primaryType.Type == KnownPrimaryType.Stream)
-            {
-                primaryType.Name = "InputStream";
-            }
-            else if (primaryType.Type == KnownPrimaryType.String)
-            {
-                primaryType.Name = "String";
-            }
-            else if (primaryType.Type == KnownPrimaryType.TimeSpan)
-            {
-                primaryType.Name = "Period";
-            }
-            else if (primaryType.Type == KnownPrimaryType.Uuid)
-            {
-                primaryType.Name = "UUID";
-            }
-            else if (primaryType.Type == KnownPrimaryType.Object)
-            {
-                primaryType.Name = "Object";
-            }
-            else if (primaryType.Type == KnownPrimaryType.Credentials)
-            {
-                primaryType.Name = "ServiceClientCredentials";
-            }
-
-            return primaryType;
+            return new PrimaryTypeModel(primaryType);
         }
+
+        private IType NormalizeSequenceType(SequenceType sequenceType)
+        {
+            sequenceType.ElementType = WrapPrimitiveType(NormalizeTypeReference(sequenceType.ElementType));
+            sequenceType.NameFormat = "List<{0}>";
+            return sequenceType;
+        }
+
+        private IType NormalizeDictionaryType(DictionaryType dictionaryType)
+        {
+            dictionaryType.ValueType = WrapPrimitiveType(NormalizeTypeReference(dictionaryType.ValueType));
+            dictionaryType.NameFormat = "Map<String, {0}>";
+            return dictionaryType;
+        }
+
+        #endregion
+
+        #region type handling
 
         public static IType WrapPrimitiveType(IType type)
         {
@@ -369,67 +415,6 @@ namespace Microsoft.Rest.Generator.Java
             }
         }
 
-        private IType NormalizeSequenceType(SequenceType sequenceType)
-        {
-            sequenceType.ElementType = WrapPrimitiveType(NormalizeTypeReference(sequenceType.ElementType));
-            sequenceType.NameFormat = "List<{0}>";
-            return sequenceType;
-        }
-
-        private IType NormalizeDictionaryType(DictionaryType dictionaryType)
-        {
-            dictionaryType.ValueType = WrapPrimitiveType(NormalizeTypeReference(dictionaryType.ValueType));
-            dictionaryType.NameFormat = "Map<String, {0}>";
-            return dictionaryType;
-        }
-
-        public static string GetJavaType(PrimaryType primaryType)
-        {
-            if (primaryType == null)
-            {
-                return null;
-            }
-
-            if (primaryType.Type == KnownPrimaryType.Date ||
-                primaryType.Name == "LocalDate")
-            {
-                return "org.joda.time.LocalDate";
-            }
-            else if (primaryType.Type == KnownPrimaryType.DateTime || 
-                primaryType.Name == "DateTime")
-            {
-                return "org.joda.time.DateTime";
-            }
-            else if (primaryType.Type == KnownPrimaryType.Decimal ||
-                primaryType.Name == "Decimal")
-            {
-                return "java.math.BigDecimal";
-            }
-            else if (primaryType.Type == KnownPrimaryType.DateTimeRfc1123 ||
-               primaryType.Name == "DateTimeRfc1123")
-            {
-                return "com.microsoft.rest.DateTimeRfc1123";
-            }
-            else if (primaryType.Type == KnownPrimaryType.Stream ||
-                primaryType.Name == "InputStream")
-            {
-                return "java.io.InputStream";
-            }
-            else if (primaryType.Type == KnownPrimaryType.TimeSpan ||
-                primaryType.Name == "Period")
-            {
-                return "org.joda.time.Period";
-            }
-            else if (primaryType.Type == KnownPrimaryType.Uuid || primaryType.Name == "Uuid")
-            {
-                return "java.util.UUID";
-            }
-            else
-            {
-                return null;
-            }
-        }
-
         public static string GetJavaException(string exception, ServiceClient serviceClient)
         {
             switch (exception) {
@@ -451,6 +436,8 @@ namespace Microsoft.Rest.Generator.Java
             }
         }
 
+        #endregion
+
         public override string EscapeDefaultValue(string defaultValue, IType type)
         {
             if (type == null)
@@ -469,10 +456,17 @@ namespace Microsoft.Rest.Generator.Java
                 {
                     return defaultValue.ToLowerInvariant();
                 }
+                else if (primaryType.Type == KnownPrimaryType.Long)
+                {
+                    return defaultValue + "L";
+                }
                 else
                 {
-                    if (primaryType.Type == KnownPrimaryType.Date ||
-                        primaryType.Type == KnownPrimaryType.DateTime ||
+                    if (primaryType.Type == KnownPrimaryType.Date)
+                    {
+                        return "LocalDate.parse(\"" + defaultValue + "\")";
+                    }
+                    else if (primaryType.Type == KnownPrimaryType.DateTime ||
                         primaryType.Type == KnownPrimaryType.DateTimeRfc1123)
                     {
                         return "DateTime.parse(\"" + defaultValue + "\")";

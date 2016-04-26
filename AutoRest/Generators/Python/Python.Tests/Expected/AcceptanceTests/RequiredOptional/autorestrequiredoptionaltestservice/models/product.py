@@ -15,8 +15,10 @@ from msrest.serialization import Model
 class Product(Model):
     """Product
 
-    :param int id:
-    :param str name:
+    :param id:
+    :type id: int
+    :param name:
+    :type name: str
     """ 
 
     _validation = {
@@ -28,6 +30,6 @@ class Product(Model):
         'name': {'key': 'name', 'type': 'str'},
     }
 
-    def __init__(self, id, name=None, **kwargs):
+    def __init__(self, id, name=None):
         self.id = id
         self.name = name

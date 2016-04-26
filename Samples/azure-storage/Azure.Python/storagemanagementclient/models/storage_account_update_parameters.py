@@ -9,8 +9,11 @@ class StorageAccountUpdateParameters(Model):
     """
     The parameters to update on the account.
 
-    :param dict tags: Resource tags
-    :param StorageAccountPropertiesUpdateParameters properties:
+    :param tags: Resource tags
+    :type tags: dict
+    :param properties:
+    :type properties: :class:`StorageAccountPropertiesUpdateParameters
+     <petstore.models.StorageAccountPropertiesUpdateParameters>`
     """ 
 
     _attribute_map = {
@@ -18,6 +21,6 @@ class StorageAccountUpdateParameters(Model):
         'properties': {'key': 'properties', 'type': 'StorageAccountPropertiesUpdateParameters'},
     }
 
-    def __init__(self, tags=None, properties=None, **kwargs):
+    def __init__(self, tags=None, properties=None):
         self.tags = tags
         self.properties = properties

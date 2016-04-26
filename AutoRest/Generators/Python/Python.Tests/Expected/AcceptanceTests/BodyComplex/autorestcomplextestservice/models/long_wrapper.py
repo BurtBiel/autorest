@@ -15,8 +15,10 @@ from msrest.serialization import Model
 class LongWrapper(Model):
     """LongWrapper
 
-    :param long field1:
-    :param long field2:
+    :param field1:
+    :type field1: long
+    :param field2:
+    :type field2: long
     """ 
 
     _attribute_map = {
@@ -24,6 +26,6 @@ class LongWrapper(Model):
         'field2': {'key': 'field2', 'type': 'long'},
     }
 
-    def __init__(self, field1=None, field2=None, **kwargs):
+    def __init__(self, field1=None, field2=None):
         self.field1 = field1
         self.field2 = field2

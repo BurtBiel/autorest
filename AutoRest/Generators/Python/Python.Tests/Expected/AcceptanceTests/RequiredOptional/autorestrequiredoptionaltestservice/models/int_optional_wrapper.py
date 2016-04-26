@@ -15,12 +15,13 @@ from msrest.serialization import Model
 class IntOptionalWrapper(Model):
     """IntOptionalWrapper
 
-    :param int value:
+    :param value:
+    :type value: int
     """ 
 
     _attribute_map = {
         'value': {'key': 'value', 'type': 'int'},
     }
 
-    def __init__(self, value=None, **kwargs):
+    def __init__(self, value=None):
         self.value = value

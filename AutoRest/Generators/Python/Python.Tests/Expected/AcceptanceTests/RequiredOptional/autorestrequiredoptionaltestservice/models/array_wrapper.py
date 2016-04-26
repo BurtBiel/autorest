@@ -15,7 +15,8 @@ from msrest.serialization import Model
 class ArrayWrapper(Model):
     """ArrayWrapper
 
-    :param list value:
+    :param value:
+    :type value: list of str
     """ 
 
     _validation = {
@@ -26,5 +27,5 @@ class ArrayWrapper(Model):
         'value': {'key': 'value', 'type': '[str]'},
     }
 
-    def __init__(self, value, **kwargs):
+    def __init__(self, value):
         self.value = value

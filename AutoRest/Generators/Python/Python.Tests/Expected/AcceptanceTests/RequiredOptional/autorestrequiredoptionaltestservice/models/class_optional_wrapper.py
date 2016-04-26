@@ -15,12 +15,14 @@ from msrest.serialization import Model
 class ClassOptionalWrapper(Model):
     """ClassOptionalWrapper
 
-    :param Product value:
+    :param value:
+    :type value: :class:`Product
+     <fixtures.acceptancetestsrequiredoptional.models.Product>`
     """ 
 
     _attribute_map = {
         'value': {'key': 'value', 'type': 'Product'},
     }
 
-    def __init__(self, value=None, **kwargs):
+    def __init__(self, value=None):
         self.value = value

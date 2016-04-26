@@ -23,7 +23,8 @@ class AutoRestParameterizedHostTestClientConfiguration(AzureConfiguration):
     attributes.
 
     :param credentials: Gets Azure subscription credentials.
-    :type credentials: credentials
+    :type credentials: :mod:`A msrestazure Credentials
+     object<msrestazure.azure_active_directory>`
     :param host: A string value that is used as a global part of the
      parameterized host
     :type host: str
@@ -44,9 +45,13 @@ class AutoRestParameterizedHostTestClientConfiguration(AzureConfiguration):
             self, credentials, host, accept_language='en-US', long_running_operation_retry_timeout=30, generate_client_request_id=True, filepath=None):
 
         if credentials is None:
-            raise ValueError('credentials must not be None.')
+            raise ValueError("Parameter 'credentials' must not be None.")
         if host is None:
-            raise ValueError('host must not be None.')
+            raise ValueError("Parameter 'host' must not be None.")
+        if not isinstance(host, str):
+            raise TypeError("Parameter 'host' must be str.")
+        if accept_language is not None and not isinstance(accept_language, str):
+            raise TypeError("Optional parameter 'accept_language' must be str.")
         base_url = 'http://{accountName}{host}'
 
         super(AutoRestParameterizedHostTestClientConfiguration, self).__init__(base_url, filepath)

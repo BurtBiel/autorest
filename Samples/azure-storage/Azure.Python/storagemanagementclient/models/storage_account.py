@@ -9,13 +9,29 @@ class StorageAccount(Resource):
     """
     The storage account.
 
-    :param str id: Resource Id
-    :param str name: Resource name
-    :param str type: Resource type
-    :param str location: Resource location
-    :param dict tags: Resource tags
-    :param StorageAccountProperties properties:
+    Variables are only populated by the server, and will be ignored when
+    sending a request.
+
+    :ivar id: Resource Id
+    :vartype id: str
+    :ivar name: Resource name
+    :vartype name: str
+    :ivar type: Resource type
+    :vartype type: str
+    :param location: Resource location
+    :type location: str
+    :param tags: Resource tags
+    :type tags: dict
+    :param properties:
+    :type properties: :class:`StorageAccountProperties
+     <petstore.models.StorageAccountProperties>`
     """ 
+
+    _validation = {
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'type': {'readonly': True},
+    }
 
     _attribute_map = {
         'id': {'key': 'id', 'type': 'str'},
@@ -26,6 +42,6 @@ class StorageAccount(Resource):
         'properties': {'key': 'properties', 'type': 'StorageAccountProperties'},
     }
 
-    def __init__(self, id=None, name=None, type=None, location=None, tags=None, properties=None, **kwargs):
-        super(StorageAccount, self).__init__(id=id, name=name, type=type, location=location, tags=tags, **kwargs)
+    def __init__(self, location=None, tags=None, properties=None):
+        super(StorageAccount, self).__init__(location=location, tags=tags)
         self.properties = properties

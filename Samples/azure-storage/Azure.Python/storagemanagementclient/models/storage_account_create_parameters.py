@@ -9,9 +9,13 @@ class StorageAccountCreateParameters(Model):
     """
     The parameters to provide for the account.
 
-    :param str location: Resource location
-    :param dict tags: Resource tags
-    :param StorageAccountPropertiesCreateParameters properties:
+    :param location: Resource location
+    :type location: str
+    :param tags: Resource tags
+    :type tags: dict
+    :param properties:
+    :type properties: :class:`StorageAccountPropertiesCreateParameters
+     <petstore.models.StorageAccountPropertiesCreateParameters>`
     """ 
 
     _validation = {
@@ -24,7 +28,7 @@ class StorageAccountCreateParameters(Model):
         'properties': {'key': 'properties', 'type': 'StorageAccountPropertiesCreateParameters'},
     }
 
-    def __init__(self, location, tags=None, properties=None, **kwargs):
+    def __init__(self, location, tags=None, properties=None):
         self.location = location
         self.tags = tags
         self.properties = properties

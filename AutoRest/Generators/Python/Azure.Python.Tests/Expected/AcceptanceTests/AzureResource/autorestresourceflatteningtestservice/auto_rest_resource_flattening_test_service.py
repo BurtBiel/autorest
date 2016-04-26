@@ -24,7 +24,8 @@ class AutoRestResourceFlatteningTestServiceConfiguration(AzureConfiguration):
     attributes.
 
     :param credentials: Gets Azure subscription credentials.
-    :type credentials: credentials
+    :type credentials: :mod:`A msrestazure Credentials
+     object<msrestazure.azure_active_directory>`
     :param accept_language: Gets or sets the preferred language for the
      response.
     :type accept_language: str
@@ -43,7 +44,9 @@ class AutoRestResourceFlatteningTestServiceConfiguration(AzureConfiguration):
             self, credentials, accept_language='en-US', long_running_operation_retry_timeout=30, generate_client_request_id=True, base_url=None, filepath=None):
 
         if credentials is None:
-            raise ValueError('credentials must not be None.')
+            raise ValueError("Parameter 'credentials' must not be None.")
+        if accept_language is not None and not isinstance(accept_language, str):
+            raise TypeError("Optional parameter 'accept_language' must be str.")
         if not base_url:
             base_url = 'http://localhost'
 
@@ -81,12 +84,16 @@ class AutoRestResourceFlatteningTestService(object):
         Put External Resource as an Array
 
         :param resource_array: External Resource as an Array to put
-        :type resource_array: list
+        :type resource_array: list of :class:`Resource
+         <fixtures.acceptancetestsazureresource.models.Resource>`
         :param dict custom_headers: headers that will be added to the request
-        :param boolean raw: returns the direct response alongside the
+        :param bool raw: returns the direct response alongside the
          deserialized response
+        :param operation_config: :ref:`Operation configuration
+         overrides<msrest:optionsforoperations>`.
         :rtype: None
-        :rtype: msrest.pipeline.ClientRawResponse if raw=True
+        :rtype: :class:`ClientRawResponse<msrest.pipeline.ClientRawResponse>`
+         if raw=true
         """
         # Construct URL
         url = '/azure/resource-flatten/array'
@@ -128,10 +135,14 @@ class AutoRestResourceFlatteningTestService(object):
         Get External Resource as an Array
 
         :param dict custom_headers: headers that will be added to the request
-        :param boolean raw: returns the direct response alongside the
+        :param bool raw: returns the direct response alongside the
          deserialized response
-        :rtype: list
-        :rtype: msrest.pipeline.ClientRawResponse if raw=True
+        :param operation_config: :ref:`Operation configuration
+         overrides<msrest:optionsforoperations>`.
+        :rtype: list of :class:`FlattenedProduct
+         <fixtures.acceptancetestsazureresource.models.FlattenedProduct>`
+        :rtype: :class:`ClientRawResponse<msrest.pipeline.ClientRawResponse>`
+         if raw=true
         """
         # Construct URL
         url = '/azure/resource-flatten/array'
@@ -175,10 +186,13 @@ class AutoRestResourceFlatteningTestService(object):
         :param resource_dictionary: External Resource as a Dictionary to put
         :type resource_dictionary: dict
         :param dict custom_headers: headers that will be added to the request
-        :param boolean raw: returns the direct response alongside the
+        :param bool raw: returns the direct response alongside the
          deserialized response
+        :param operation_config: :ref:`Operation configuration
+         overrides<msrest:optionsforoperations>`.
         :rtype: None
-        :rtype: msrest.pipeline.ClientRawResponse if raw=True
+        :rtype: :class:`ClientRawResponse<msrest.pipeline.ClientRawResponse>`
+         if raw=true
         """
         # Construct URL
         url = '/azure/resource-flatten/dictionary'
@@ -220,10 +234,13 @@ class AutoRestResourceFlatteningTestService(object):
         Get External Resource as a Dictionary
 
         :param dict custom_headers: headers that will be added to the request
-        :param boolean raw: returns the direct response alongside the
+        :param bool raw: returns the direct response alongside the
          deserialized response
+        :param operation_config: :ref:`Operation configuration
+         overrides<msrest:optionsforoperations>`.
         :rtype: dict
-        :rtype: msrest.pipeline.ClientRawResponse if raw=True
+        :rtype: :class:`ClientRawResponse<msrest.pipeline.ClientRawResponse>`
+         if raw=true
         """
         # Construct URL
         url = '/azure/resource-flatten/dictionary'
@@ -266,12 +283,16 @@ class AutoRestResourceFlatteningTestService(object):
 
         :param resource_complex_object: External Resource as a
          ResourceCollection to put
-        :type resource_complex_object: ResourceCollection
+        :type resource_complex_object: :class:`ResourceCollection
+         <fixtures.acceptancetestsazureresource.models.ResourceCollection>`
         :param dict custom_headers: headers that will be added to the request
-        :param boolean raw: returns the direct response alongside the
+        :param bool raw: returns the direct response alongside the
          deserialized response
+        :param operation_config: :ref:`Operation configuration
+         overrides<msrest:optionsforoperations>`.
         :rtype: None
-        :rtype: msrest.pipeline.ClientRawResponse if raw=True
+        :rtype: :class:`ClientRawResponse<msrest.pipeline.ClientRawResponse>`
+         if raw=true
         """
         # Construct URL
         url = '/azure/resource-flatten/resourcecollection'
@@ -313,10 +334,14 @@ class AutoRestResourceFlatteningTestService(object):
         Get External Resource as a ResourceCollection
 
         :param dict custom_headers: headers that will be added to the request
-        :param boolean raw: returns the direct response alongside the
+        :param bool raw: returns the direct response alongside the
          deserialized response
-        :rtype: ResourceCollection
-        :rtype: msrest.pipeline.ClientRawResponse if raw=True
+        :param operation_config: :ref:`Operation configuration
+         overrides<msrest:optionsforoperations>`.
+        :rtype: :class:`ResourceCollection
+         <fixtures.acceptancetestsazureresource.models.ResourceCollection>`
+        :rtype: :class:`ClientRawResponse<msrest.pipeline.ClientRawResponse>`
+         if raw=true
         """
         # Construct URL
         url = '/azure/resource-flatten/resourcecollection'

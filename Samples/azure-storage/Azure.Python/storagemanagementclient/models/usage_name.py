@@ -9,9 +9,11 @@ class UsageName(Model):
     """
     The Usage Names.
 
-    :param str value: Gets a string describing the resource name.
-    :param str localized_value: Gets a localized string describing the
-     resource name.
+    :param value: Gets a string describing the resource name.
+    :type value: str
+    :param localized_value: Gets a localized string describing the resource
+     name.
+    :type localized_value: str
     """ 
 
     _attribute_map = {
@@ -19,6 +21,6 @@ class UsageName(Model):
         'localized_value': {'key': 'localizedValue', 'type': 'str'},
     }
 
-    def __init__(self, value=None, localized_value=None, **kwargs):
+    def __init__(self, value=None, localized_value=None):
         self.value = value
         self.localized_value = localized_value

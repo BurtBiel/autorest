@@ -152,15 +152,17 @@ declare class AutoRestResourceFlatteningTestService {
          * @param {string} [options.simpleBodyProduct.maxProductDisplayName] Display
          * name of product.
          * 
+         * @param {string} [options.simpleBodyProduct.genericValue] Generic URL value.
+         * 
          * @param {string} [options.simpleBodyProduct.odatavalue] URL value.
          * 
-         * @param {string} [options.simpleBodyProduct.baseProductId] Unique identifier
+         * @param {string} [options.simpleBodyProduct.productId] Unique identifier
          * representing a specific product for a given latitude & longitude. For
          * example, uberX in San Francisco will have a different product_id than
          * uberX in Los Angeles.
          * 
-         * @param {string} [options.simpleBodyProduct.baseProductDescription]
-         * Description of product.
+         * @param {string} [options.simpleBodyProduct.description] Description of
+         * product.
          * 
          * @param {object} [options.customHeaders] Headers that will be added to the
          * request
@@ -174,15 +176,17 @@ declare class AutoRestResourceFlatteningTestService {
         /**
          * Put Flattened Simple Product with client flattening true on the parameter
          *
-         * @param {string} baseProductId Unique identifier representing a specific
-         * product for a given latitude & longitude. For example, uberX in San
-         * Francisco will have a different product_id than uberX in Los Angeles.
+         * @param {string} productId Unique identifier representing a specific product
+         * for a given latitude & longitude. For example, uberX in San Francisco will
+         * have a different product_id than uberX in Los Angeles.
          * 
          * @param {string} maxProductDisplayName Display name of product.
          * 
          * @param {object} [options] Optional Parameters.
          * 
-         * @param {string} [options.baseProductDescription] Description of product.
+         * @param {string} [options.description] Description of product.
+         * 
+         * @param {string} [options.genericValue] Generic URL value.
          * 
          * @param {string} [options.odatavalue] URL value.
          * 
@@ -192,8 +196,8 @@ declare class AutoRestResourceFlatteningTestService {
          * @param {ServiceCallback} [callback] callback function; see ServiceCallback
          * doc in ms-rest index.d.ts for details
          */
-        postFlattenedSimpleProduct(baseProductId: string, maxProductDisplayName: string, options: { baseProductDescription? : string, odatavalue? : string, customHeaders? : { [headerName: string]: string; } }, callback: ServiceCallback<models.SimpleProduct>): void;
-        postFlattenedSimpleProduct(baseProductId: string, maxProductDisplayName: string, callback: ServiceCallback<models.SimpleProduct>): void;
+        postFlattenedSimpleProduct(productId: string, maxProductDisplayName: string, options: { description? : string, genericValue? : string, odatavalue? : string, customHeaders? : { [headerName: string]: string; } }, callback: ServiceCallback<models.SimpleProduct>): void;
+        postFlattenedSimpleProduct(productId: string, maxProductDisplayName: string, callback: ServiceCallback<models.SimpleProduct>): void;
 
         /**
          * Put Simple Product with client flattening true on the model
@@ -204,16 +208,17 @@ declare class AutoRestResourceFlatteningTestService {
          * @param {string} [flattenParameterGroup.name] Product name with value
          * 'groupproduct'
          * 
-         * @param {string} [flattenParameterGroup.baseProductId] Unique identifier
+         * @param {string} [flattenParameterGroup.productId] Unique identifier
          * representing a specific product for a given latitude & longitude. For
          * example, uberX in San Francisco will have a different product_id than
          * uberX in Los Angeles.
          * 
-         * @param {string} [flattenParameterGroup.baseProductDescription] Description
-         * of product.
+         * @param {string} [flattenParameterGroup.description] Description of product.
          * 
          * @param {string} [flattenParameterGroup.maxProductDisplayName] Display name
          * of product.
+         * 
+         * @param {string} [flattenParameterGroup.genericValue] Generic URL value.
          * 
          * @param {string} [flattenParameterGroup.odatavalue] URL value.
          * 

@@ -15,8 +15,10 @@ from .a import A
 class B(A):
     """B
 
-    :param str status_code:
-    :param str text_status_code:
+    :param status_code:
+    :type status_code: str
+    :param text_status_code:
+    :type text_status_code: str
     """ 
 
     _attribute_map = {
@@ -24,6 +26,6 @@ class B(A):
         'text_status_code': {'key': 'textStatusCode', 'type': 'str'},
     }
 
-    def __init__(self, status_code=None, text_status_code=None, **kwargs):
-        super(B, self).__init__(status_code=status_code, **kwargs)
+    def __init__(self, status_code=None, text_status_code=None):
+        super(B, self).__init__(status_code=status_code)
         self.text_status_code = text_status_code

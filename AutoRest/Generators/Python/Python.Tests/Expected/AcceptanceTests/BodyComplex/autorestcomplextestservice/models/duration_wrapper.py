@@ -15,12 +15,13 @@ from msrest.serialization import Model
 class DurationWrapper(Model):
     """DurationWrapper
 
-    :param timedelta field:
+    :param field:
+    :type field: timedelta
     """ 
 
     _attribute_map = {
         'field': {'key': 'field', 'type': 'duration'},
     }
 
-    def __init__(self, field=None, **kwargs):
+    def __init__(self, field=None):
         self.field = field

@@ -7,12 +7,15 @@ using System.Linq;
 using Microsoft.Rest.Generator.ClientModel;
 using Microsoft.Rest.Generator.Java.TemplateModels;
 using Microsoft.Rest.Generator.Utilities;
+using System.Globalization;
 
 namespace Microsoft.Rest.Generator.Java
 {
     public class ModelTemplateModel : CompositeType
     {
         private ModelTemplateModel _parent = null;
+
+        private JavaCodeNamer _namer;
         
         public ModelTemplateModel(CompositeType source, ServiceClient serviceClient)
         {
@@ -22,9 +25,22 @@ namespace Microsoft.Rest.Generator.Java
             {
                 _parent = new ModelTemplateModel(source.BaseModelType, serviceClient);
             }
+            _namer = new JavaCodeNamer(serviceClient.Namespace);
+            PropertyModels = new List<PropertyModel>();
+            Properties.ForEach(p => PropertyModels.Add(new PropertyModel(p, serviceClient.Namespace)));
+        }
+
+        protected virtual JavaCodeNamer Namer
+        {
+            get
+            {
+                return _namer;
+            }
         }
 
         public ServiceClient ServiceClient { get; set; }
+
+        public List<PropertyModel> PropertyModels { get; private set; }
 
         public bool IsPolymorphic
         {
@@ -127,30 +143,11 @@ namespace Microsoft.Rest.Generator.Java
         public virtual IEnumerable<String> ImportList {
             get
             {
-                HashSet<String> classes = new HashSet<string>();
-                foreach (var property in this.Properties)
+                var classes = new HashSet<string>();
+                classes.AddRange(PropertyModels.SelectMany(pm => pm.Imports));
+                if (this.Properties.Any(p => !p.GetJsonProperty().IsNullOrEmpty()))
                 {
-                    if (property.Type is SequenceType)
-                    {
-                        classes.Add("java.util.List");
-                    }
-                    else if (property.Type is DictionaryType)
-                    {
-                        classes.Add("java.util.Map");
-                    }
-                    else if (property.Type is PrimaryType)
-                    {
-                        var importedFrom = JavaCodeNamer.GetJavaType(property.Type as PrimaryType);
-                        if (importedFrom != null)
-                        {
-                            classes.Add(importedFrom);
-                        }
-                    }
-
-                    if (this.Properties.Any(p => !p.GetJsonProperty().IsNullOrEmpty()))
-                    {
-                        classes.Add("com.fasterxml.jackson.annotation.JsonProperty");
-                    }
+                    classes.Add("com.fasterxml.jackson.annotation.JsonProperty");
                 }
                 // For polymorphism
                 if (IsPolymorphic)

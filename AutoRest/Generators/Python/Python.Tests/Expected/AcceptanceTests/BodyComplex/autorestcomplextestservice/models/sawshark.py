@@ -15,13 +15,21 @@ from .shark import Shark
 class Sawshark(Shark):
     """Sawshark
 
-    :param str species:
-    :param float length:
-    :param list siblings:
-    :param str fishtype: Polymorphic Discriminator
-    :param int age:
-    :param datetime birthday:
-    :param bytearray picture:
+    :param species:
+    :type species: str
+    :param length:
+    :type length: float
+    :param siblings:
+    :type siblings: list of :class:`Fish
+     <fixtures.acceptancetestsbodycomplex.models.Fish>`
+    :param fishtype: Polymorphic Discriminator
+    :type fishtype: str
+    :param age:
+    :type age: int
+    :param birthday:
+    :type birthday: datetime
+    :param picture:
+    :type picture: bytearray
     """ 
 
     _validation = {
@@ -40,7 +48,7 @@ class Sawshark(Shark):
         'picture': {'key': 'picture', 'type': 'bytearray'},
     }
 
-    def __init__(self, length, birthday, species=None, siblings=None, age=None, picture=None, **kwargs):
-        super(Sawshark, self).__init__(species=species, length=length, siblings=siblings, age=age, birthday=birthday, **kwargs)
+    def __init__(self, length, birthday, species=None, siblings=None, age=None, picture=None):
+        super(Sawshark, self).__init__(species=species, length=length, siblings=siblings, age=age, birthday=birthday)
         self.picture = picture
         self.fishtype = 'sawshark'

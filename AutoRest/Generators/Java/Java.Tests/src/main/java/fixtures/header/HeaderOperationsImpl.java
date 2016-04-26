@@ -139,7 +139,7 @@ public final class HeaderOperationsImpl implements HeaderOperations {
 
         @Headers("Content-Type: application/json; charset=utf-8")
         @POST("header/param/prim/date")
-        Call<ResponseBody> paramDate(@Header("scenario") String scenario, @Header("value") String value);
+        Call<ResponseBody> paramDate(@Header("scenario") String scenario, @Header("value") LocalDate value);
 
         @Headers("Content-Type: application/json; charset=utf-8")
         @POST("header/response/prim/date")
@@ -147,7 +147,7 @@ public final class HeaderOperationsImpl implements HeaderOperations {
 
         @Headers("Content-Type: application/json; charset=utf-8")
         @POST("header/param/prim/datetime")
-        Call<ResponseBody> paramDatetime(@Header("scenario") String scenario, @Header("value") String value);
+        Call<ResponseBody> paramDatetime(@Header("scenario") String scenario, @Header("value") DateTime value);
 
         @Headers("Content-Type: application/json; charset=utf-8")
         @POST("header/response/prim/datetime")
@@ -179,7 +179,7 @@ public final class HeaderOperationsImpl implements HeaderOperations {
 
         @Headers("Content-Type: application/json; charset=utf-8")
         @POST("header/param/prim/enum")
-        Call<ResponseBody> paramEnum(@Header("scenario") String scenario, @Header("value") String value);
+        Call<ResponseBody> paramEnum(@Header("scenario") String scenario, @Header("value") GreyscaleColors value);
 
         @Headers("Content-Type: application/json; charset=utf-8")
         @POST("header/response/prim/enum")
@@ -955,6 +955,56 @@ public final class HeaderOperationsImpl implements HeaderOperations {
      * Send a post request with header values "scenario": "valid", "value": "The quick brown fox jumps over the lazy dog" or "scenario": "null", "value": null or "scenario": "empty", "value": "".
      *
      * @param scenario Send a post request with header values "scenario": "valid" or "null" or "empty"
+     * @throws ErrorException exception thrown from REST call
+     * @throws IOException exception thrown from serialization/deserialization
+     * @throws IllegalArgumentException exception thrown from invalid parameters
+     * @return the {@link ServiceResponse} object if successful.
+     */
+    public ServiceResponse<Void> paramString(String scenario) throws ErrorException, IOException, IllegalArgumentException {
+        if (scenario == null) {
+            throw new IllegalArgumentException("Parameter scenario is required and cannot be null.");
+        }
+        final String value = null;
+        Call<ResponseBody> call = service.paramString(scenario, value);
+        return paramStringDelegate(call.execute());
+    }
+
+    /**
+     * Send a post request with header values "scenario": "valid", "value": "The quick brown fox jumps over the lazy dog" or "scenario": "null", "value": null or "scenario": "empty", "value": "".
+     *
+     * @param scenario Send a post request with header values "scenario": "valid" or "null" or "empty"
+     * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
+     * @throws IllegalArgumentException thrown if callback is null
+     * @return the {@link Call} object
+     */
+    public ServiceCall paramStringAsync(String scenario, final ServiceCallback<Void> serviceCallback) throws IllegalArgumentException {
+        if (serviceCallback == null) {
+            throw new IllegalArgumentException("ServiceCallback is required for async calls.");
+        }
+        if (scenario == null) {
+            serviceCallback.failure(new IllegalArgumentException("Parameter scenario is required and cannot be null."));
+            return null;
+        }
+        final String value = null;
+        Call<ResponseBody> call = service.paramString(scenario, value);
+        final ServiceCall serviceCall = new ServiceCall(call);
+        call.enqueue(new ServiceResponseCallback<Void>(serviceCallback) {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                try {
+                    serviceCallback.success(paramStringDelegate(response));
+                } catch (ErrorException | IOException exception) {
+                    serviceCallback.failure(exception);
+                }
+            }
+        });
+        return serviceCall;
+    }
+
+    /**
+     * Send a post request with header values "scenario": "valid", "value": "The quick brown fox jumps over the lazy dog" or "scenario": "null", "value": null or "scenario": "empty", "value": "".
+     *
+     * @param scenario Send a post request with header values "scenario": "valid" or "null" or "empty"
      * @param value Send a post request with header values "The quick brown fox jumps over the lazy dog" or null or ""
      * @throws ErrorException exception thrown from REST call
      * @throws IOException exception thrown from serialization/deserialization
@@ -1080,7 +1130,7 @@ public final class HeaderOperationsImpl implements HeaderOperations {
         if (value == null) {
             throw new IllegalArgumentException("Parameter value is required and cannot be null.");
         }
-        Call<ResponseBody> call = service.paramDate(scenario, this.client.getMapperAdapter().serializeRaw(value));
+        Call<ResponseBody> call = service.paramDate(scenario, value);
         return paramDateDelegate(call.execute());
     }
 
@@ -1105,7 +1155,7 @@ public final class HeaderOperationsImpl implements HeaderOperations {
             serviceCallback.failure(new IllegalArgumentException("Parameter value is required and cannot be null."));
             return null;
         }
-        Call<ResponseBody> call = service.paramDate(scenario, this.client.getMapperAdapter().serializeRaw(value));
+        Call<ResponseBody> call = service.paramDate(scenario, value);
         final ServiceCall serviceCall = new ServiceCall(call);
         call.enqueue(new ServiceResponseCallback<Void>(serviceCallback) {
             @Override
@@ -1199,7 +1249,7 @@ public final class HeaderOperationsImpl implements HeaderOperations {
         if (value == null) {
             throw new IllegalArgumentException("Parameter value is required and cannot be null.");
         }
-        Call<ResponseBody> call = service.paramDatetime(scenario, this.client.getMapperAdapter().serializeRaw(value));
+        Call<ResponseBody> call = service.paramDatetime(scenario, value);
         return paramDatetimeDelegate(call.execute());
     }
 
@@ -1224,7 +1274,7 @@ public final class HeaderOperationsImpl implements HeaderOperations {
             serviceCallback.failure(new IllegalArgumentException("Parameter value is required and cannot be null."));
             return null;
         }
-        Call<ResponseBody> call = service.paramDatetime(scenario, this.client.getMapperAdapter().serializeRaw(value));
+        Call<ResponseBody> call = service.paramDatetime(scenario, value);
         final ServiceCall serviceCall = new ServiceCall(call);
         call.enqueue(new ServiceResponseCallback<Void>(serviceCallback) {
             @Override
@@ -1305,17 +1355,71 @@ public final class HeaderOperationsImpl implements HeaderOperations {
      * Send a post request with header values "scenario": "valid", "value": "Wed, 01 Jan 2010 12:34:56 GMT" or "scenario": "min", "value": "Mon, 01 Jan 0001 00:00:00 GMT".
      *
      * @param scenario Send a post request with header values "scenario": "valid" or "min"
+     * @throws ErrorException exception thrown from REST call
+     * @throws IOException exception thrown from serialization/deserialization
+     * @throws IllegalArgumentException exception thrown from invalid parameters
+     * @return the {@link ServiceResponse} object if successful.
+     */
+    public ServiceResponse<Void> paramDatetimeRfc1123(String scenario) throws ErrorException, IOException, IllegalArgumentException {
+        if (scenario == null) {
+            throw new IllegalArgumentException("Parameter scenario is required and cannot be null.");
+        }
+        final DateTimeRfc1123 valueConverted = null;
+        Call<ResponseBody> call = service.paramDatetimeRfc1123(scenario, valueConverted);
+        return paramDatetimeRfc1123Delegate(call.execute());
+    }
+
+    /**
+     * Send a post request with header values "scenario": "valid", "value": "Wed, 01 Jan 2010 12:34:56 GMT" or "scenario": "min", "value": "Mon, 01 Jan 0001 00:00:00 GMT".
+     *
+     * @param scenario Send a post request with header values "scenario": "valid" or "min"
+     * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
+     * @throws IllegalArgumentException thrown if callback is null
+     * @return the {@link Call} object
+     */
+    public ServiceCall paramDatetimeRfc1123Async(String scenario, final ServiceCallback<Void> serviceCallback) throws IllegalArgumentException {
+        if (serviceCallback == null) {
+            throw new IllegalArgumentException("ServiceCallback is required for async calls.");
+        }
+        if (scenario == null) {
+            serviceCallback.failure(new IllegalArgumentException("Parameter scenario is required and cannot be null."));
+            return null;
+        }
+        final DateTimeRfc1123 valueConverted = null;
+        Call<ResponseBody> call = service.paramDatetimeRfc1123(scenario, valueConverted);
+        final ServiceCall serviceCall = new ServiceCall(call);
+        call.enqueue(new ServiceResponseCallback<Void>(serviceCallback) {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                try {
+                    serviceCallback.success(paramDatetimeRfc1123Delegate(response));
+                } catch (ErrorException | IOException exception) {
+                    serviceCallback.failure(exception);
+                }
+            }
+        });
+        return serviceCall;
+    }
+
+    /**
+     * Send a post request with header values "scenario": "valid", "value": "Wed, 01 Jan 2010 12:34:56 GMT" or "scenario": "min", "value": "Mon, 01 Jan 0001 00:00:00 GMT".
+     *
+     * @param scenario Send a post request with header values "scenario": "valid" or "min"
      * @param value Send a post request with header values "Wed, 01 Jan 2010 12:34:56 GMT" or "Mon, 01 Jan 0001 00:00:00 GMT"
      * @throws ErrorException exception thrown from REST call
      * @throws IOException exception thrown from serialization/deserialization
      * @throws IllegalArgumentException exception thrown from invalid parameters
      * @return the {@link ServiceResponse} object if successful.
      */
-    public ServiceResponse<Void> paramDatetimeRfc1123(String scenario, DateTimeRfc1123 value) throws ErrorException, IOException, IllegalArgumentException {
+    public ServiceResponse<Void> paramDatetimeRfc1123(String scenario, DateTime value) throws ErrorException, IOException, IllegalArgumentException {
         if (scenario == null) {
             throw new IllegalArgumentException("Parameter scenario is required and cannot be null.");
         }
-        Call<ResponseBody> call = service.paramDatetimeRfc1123(scenario, value);
+        DateTimeRfc1123 valueConverted = null;
+        if (value != null) {
+            valueConverted = new DateTimeRfc1123(value);
+        }
+        Call<ResponseBody> call = service.paramDatetimeRfc1123(scenario, valueConverted);
         return paramDatetimeRfc1123Delegate(call.execute());
     }
 
@@ -1328,7 +1432,7 @@ public final class HeaderOperationsImpl implements HeaderOperations {
      * @throws IllegalArgumentException thrown if callback is null
      * @return the {@link Call} object
      */
-    public ServiceCall paramDatetimeRfc1123Async(String scenario, DateTimeRfc1123 value, final ServiceCallback<Void> serviceCallback) throws IllegalArgumentException {
+    public ServiceCall paramDatetimeRfc1123Async(String scenario, DateTime value, final ServiceCallback<Void> serviceCallback) throws IllegalArgumentException {
         if (serviceCallback == null) {
             throw new IllegalArgumentException("ServiceCallback is required for async calls.");
         }
@@ -1336,7 +1440,11 @@ public final class HeaderOperationsImpl implements HeaderOperations {
             serviceCallback.failure(new IllegalArgumentException("Parameter scenario is required and cannot be null."));
             return null;
         }
-        Call<ResponseBody> call = service.paramDatetimeRfc1123(scenario, value);
+        DateTimeRfc1123 valueConverted = null;
+        if (value != null) {
+            valueConverted = new DateTimeRfc1123(value);
+        }
+        Call<ResponseBody> call = service.paramDatetimeRfc1123(scenario, valueConverted);
         final ServiceCall serviceCall = new ServiceCall(call);
         call.enqueue(new ServiceResponseCallback<Void>(serviceCallback) {
             @Override
@@ -1549,7 +1657,8 @@ public final class HeaderOperationsImpl implements HeaderOperations {
         if (value == null) {
             throw new IllegalArgumentException("Parameter value is required and cannot be null.");
         }
-        Call<ResponseBody> call = service.paramByte(scenario, Base64.encodeBase64String(value));
+        String valueConverted = Base64.encodeBase64String(value);
+        Call<ResponseBody> call = service.paramByte(scenario, valueConverted);
         return paramByteDelegate(call.execute());
     }
 
@@ -1574,7 +1683,8 @@ public final class HeaderOperationsImpl implements HeaderOperations {
             serviceCallback.failure(new IllegalArgumentException("Parameter value is required and cannot be null."));
             return null;
         }
-        Call<ResponseBody> call = service.paramByte(scenario, Base64.encodeBase64String(value));
+        String valueConverted = Base64.encodeBase64String(value);
+        Call<ResponseBody> call = service.paramByte(scenario, valueConverted);
         final ServiceCall serviceCall = new ServiceCall(call);
         call.enqueue(new ServiceResponseCallback<Void>(serviceCallback) {
             @Override
@@ -1655,6 +1765,56 @@ public final class HeaderOperationsImpl implements HeaderOperations {
      * Send a post request with header values "scenario": "valid", "value": "GREY" or "scenario": "null", "value": null.
      *
      * @param scenario Send a post request with header values "scenario": "valid" or "null" or "empty"
+     * @throws ErrorException exception thrown from REST call
+     * @throws IOException exception thrown from serialization/deserialization
+     * @throws IllegalArgumentException exception thrown from invalid parameters
+     * @return the {@link ServiceResponse} object if successful.
+     */
+    public ServiceResponse<Void> paramEnum(String scenario) throws ErrorException, IOException, IllegalArgumentException {
+        if (scenario == null) {
+            throw new IllegalArgumentException("Parameter scenario is required and cannot be null.");
+        }
+        final GreyscaleColors value = null;
+        Call<ResponseBody> call = service.paramEnum(scenario, value);
+        return paramEnumDelegate(call.execute());
+    }
+
+    /**
+     * Send a post request with header values "scenario": "valid", "value": "GREY" or "scenario": "null", "value": null.
+     *
+     * @param scenario Send a post request with header values "scenario": "valid" or "null" or "empty"
+     * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
+     * @throws IllegalArgumentException thrown if callback is null
+     * @return the {@link Call} object
+     */
+    public ServiceCall paramEnumAsync(String scenario, final ServiceCallback<Void> serviceCallback) throws IllegalArgumentException {
+        if (serviceCallback == null) {
+            throw new IllegalArgumentException("ServiceCallback is required for async calls.");
+        }
+        if (scenario == null) {
+            serviceCallback.failure(new IllegalArgumentException("Parameter scenario is required and cannot be null."));
+            return null;
+        }
+        final GreyscaleColors value = null;
+        Call<ResponseBody> call = service.paramEnum(scenario, value);
+        final ServiceCall serviceCall = new ServiceCall(call);
+        call.enqueue(new ServiceResponseCallback<Void>(serviceCallback) {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                try {
+                    serviceCallback.success(paramEnumDelegate(response));
+                } catch (ErrorException | IOException exception) {
+                    serviceCallback.failure(exception);
+                }
+            }
+        });
+        return serviceCall;
+    }
+
+    /**
+     * Send a post request with header values "scenario": "valid", "value": "GREY" or "scenario": "null", "value": null.
+     *
+     * @param scenario Send a post request with header values "scenario": "valid" or "null" or "empty"
      * @param value Send a post request with header values 'GREY' . Possible values include: 'White', 'black', 'GREY'
      * @throws ErrorException exception thrown from REST call
      * @throws IOException exception thrown from serialization/deserialization
@@ -1665,7 +1825,7 @@ public final class HeaderOperationsImpl implements HeaderOperations {
         if (scenario == null) {
             throw new IllegalArgumentException("Parameter scenario is required and cannot be null.");
         }
-        Call<ResponseBody> call = service.paramEnum(scenario, this.client.getMapperAdapter().serializeRaw(value));
+        Call<ResponseBody> call = service.paramEnum(scenario, value);
         return paramEnumDelegate(call.execute());
     }
 
@@ -1686,7 +1846,7 @@ public final class HeaderOperationsImpl implements HeaderOperations {
             serviceCallback.failure(new IllegalArgumentException("Parameter scenario is required and cannot be null."));
             return null;
         }
-        Call<ResponseBody> call = service.paramEnum(scenario, this.client.getMapperAdapter().serializeRaw(value));
+        Call<ResponseBody> call = service.paramEnum(scenario, value);
         final ServiceCall serviceCall = new ServiceCall(call);
         call.enqueue(new ServiceResponseCallback<Void>(serviceCallback) {
             @Override

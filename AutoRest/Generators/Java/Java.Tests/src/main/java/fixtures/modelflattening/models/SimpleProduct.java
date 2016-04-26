@@ -28,7 +28,13 @@ public class SimpleProduct extends BaseProduct {
      * Capacity of product. For example, 4 people.
      */
     @JsonProperty(value = "details.max_product_capacity", required = true)
-    private String maxProductCapacity;
+    private String capacity;
+
+    /**
+     * Generic URL value.
+     */
+    @JsonProperty(value = "details.max_product_image.generic_value")
+    private String genericValue;
 
     /**
      * URL value.
@@ -40,7 +46,7 @@ public class SimpleProduct extends BaseProduct {
      * Creates an instance of SimpleProduct class.
      */
     public SimpleProduct() {
-        maxProductCapacity = "Large";
+        capacity = "Large";
     }
 
     /**
@@ -62,21 +68,39 @@ public class SimpleProduct extends BaseProduct {
     }
 
     /**
-     * Get the maxProductCapacity value.
+     * Get the capacity value.
      *
-     * @return the maxProductCapacity value
+     * @return the capacity value
      */
-    public String getMaxProductCapacity() {
-        return this.maxProductCapacity;
+    public String getCapacity() {
+        return this.capacity;
     }
 
     /**
-     * Set the maxProductCapacity value.
+     * Set the capacity value.
      *
-     * @param maxProductCapacity the maxProductCapacity value to set
+     * @param capacity the capacity value to set
      */
-    public void setMaxProductCapacity(String maxProductCapacity) {
-        this.maxProductCapacity = maxProductCapacity;
+    public void setCapacity(String capacity) {
+        this.capacity = capacity;
+    }
+
+    /**
+     * Get the genericValue value.
+     *
+     * @return the genericValue value
+     */
+    public String getGenericValue() {
+        return this.genericValue;
+    }
+
+    /**
+     * Set the genericValue value.
+     *
+     * @param genericValue the genericValue value to set
+     */
+    public void setGenericValue(String genericValue) {
+        this.genericValue = genericValue;
     }
 
     /**

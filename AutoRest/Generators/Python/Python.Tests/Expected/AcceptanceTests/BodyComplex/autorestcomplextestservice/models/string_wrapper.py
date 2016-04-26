@@ -15,9 +15,12 @@ from msrest.serialization import Model
 class StringWrapper(Model):
     """StringWrapper
 
-    :param str field:
-    :param str empty:
-    :param str null:
+    :param field:
+    :type field: str
+    :param empty:
+    :type empty: str
+    :param null:
+    :type null: str
     """ 
 
     _attribute_map = {
@@ -26,7 +29,7 @@ class StringWrapper(Model):
         'null': {'key': 'null', 'type': 'str'},
     }
 
-    def __init__(self, field=None, empty=None, null=None, **kwargs):
+    def __init__(self, field=None, empty=None, null=None):
         self.field = field
         self.empty = empty
         self.null = null

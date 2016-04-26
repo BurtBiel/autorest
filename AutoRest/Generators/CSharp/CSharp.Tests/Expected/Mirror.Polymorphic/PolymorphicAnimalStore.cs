@@ -109,6 +109,10 @@ namespace Fixtures.MirrorPolymorphic
         }
 
         /// <summary>
+        /// An optional partial-method to perform custom initialization.
+        ///</summary> 
+        partial void CustomInitialize();
+        /// <summary>
         /// Initializes client properties.
         /// </summary>
         private void Initialize()
@@ -141,6 +145,7 @@ namespace Fixtures.MirrorPolymorphic
             };
             SerializationSettings.Converters.Add(new PolymorphicSerializeJsonConverter<Animal>("dtype"));
             DeserializationSettings.Converters.Add(new PolymorphicDeserializeJsonConverter<Animal>("dtype"));
+            CustomInitialize();
         }    
         /// <summary>
         /// Product Types
@@ -197,9 +202,12 @@ namespace Fixtures.MirrorPolymorphic
 
             // Serialize Request
             string _requestContent = null;
-            _requestContent = SafeJsonConvert.SerializeObject(animalCreateOrUpdateParameter, this.SerializationSettings);
-            _httpRequest.Content = new StringContent(_requestContent, Encoding.UTF8);
-            _httpRequest.Content.Headers.ContentType = MediaTypeHeaderValue.Parse("application/json; charset=utf-8");
+            if(animalCreateOrUpdateParameter != null)
+            {
+                _requestContent = SafeJsonConvert.SerializeObject(animalCreateOrUpdateParameter, this.SerializationSettings);
+                _httpRequest.Content = new StringContent(_requestContent, Encoding.UTF8);
+                _httpRequest.Content.Headers.ContentType = MediaTypeHeaderValue.Parse("application/json; charset=utf-8");
+            }
             // Send Request
             if (_shouldTrace)
             {

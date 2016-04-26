@@ -15,8 +15,10 @@ from msrest.serialization import Model
 class DateWrapper(Model):
     """DateWrapper
 
-    :param date field:
-    :param date leap:
+    :param field:
+    :type field: date
+    :param leap:
+    :type leap: date
     """ 
 
     _attribute_map = {
@@ -24,6 +26,6 @@ class DateWrapper(Model):
         'leap': {'key': 'leap', 'type': 'date'},
     }
 
-    def __init__(self, field=None, leap=None, **kwargs):
+    def __init__(self, field=None, leap=None):
         self.field = field
         self.leap = leap

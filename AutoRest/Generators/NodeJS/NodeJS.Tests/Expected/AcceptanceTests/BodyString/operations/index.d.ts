@@ -39,7 +39,7 @@ export interface String {
      *
      * @param {object} [options] Optional Parameters.
      * 
-     * @param {string} [options.stringBody]
+     * @param {string} [options.stringBody] Possible values include: ''
      * 
      * @param {object} [options.customHeaders] Headers that will be added to the
      * request
@@ -67,7 +67,7 @@ export interface String {
     /**
      * Set string value empty ''
      *
-     * @param {string} stringBody
+     * @param {string} stringBody Possible values include: ''
      * 
      * @param {object} [options] Optional Parameters.
      * 
@@ -99,7 +99,8 @@ export interface String {
      * Set string value mbcs
      * '啊齄丂狛狜隣郎隣兀﨩ˊ▇█〞〡￤℡㈱‐ー﹡﹢﹫、〓ⅰⅹ⒈€㈠㈩ⅠⅫ！￣ぁんァヶΑ︴АЯаяāɡㄅㄩ─╋︵﹄︻︱︳︴ⅰⅹɑɡ〇〾⿻⺁䜣€ '
      *
-     * @param {string} stringBody
+     * @param {string} stringBody Possible values include:
+     * '啊齄丂狛狜隣郎隣兀﨩ˊ▇█〞〡￤℡㈱‐ー﹡﹢﹫、〓ⅰⅹ⒈€㈠㈩ⅠⅫ！￣ぁんァヶΑ︴АЯаяāɡㄅㄩ─╋︵﹄︻︱︳︴ⅰⅹɑɡ〇〾⿻⺁䜣€ '
      * 
      * @param {object} [options] Optional Parameters.
      * 
@@ -133,7 +134,8 @@ export interface String {
      * '<tab><space><space>Now is the time for all good men to come to the aid of
      * their country<tab><space><space>'
      *
-     * @param {string} stringBody
+     * @param {string} stringBody Possible values include: '    Now is the time
+     * for all good men to come to the aid of their country    '
      * 
      * @param {object} [options] Optional Parameters.
      * 
@@ -159,6 +161,64 @@ export interface String {
      */
     getNotProvided(options: { customHeaders? : { [headerName: string]: string; } }, callback: ServiceCallback<string>): void;
     getNotProvided(callback: ServiceCallback<string>): void;
+
+    /**
+     * Get value that is base64 encoded
+     *
+     * @param {object} [options] Optional Parameters.
+     * 
+     * @param {object} [options.customHeaders] Headers that will be added to the
+     * request
+     * 
+     * @param {ServiceCallback} [callback] callback function; see ServiceCallback
+     * doc in ms-rest index.d.ts for details
+     */
+    getBase64Encoded(options: { customHeaders? : { [headerName: string]: string; } }, callback: ServiceCallback<Buffer>): void;
+    getBase64Encoded(callback: ServiceCallback<Buffer>): void;
+
+    /**
+     * Get value that is base64url encoded
+     *
+     * @param {object} [options] Optional Parameters.
+     * 
+     * @param {object} [options.customHeaders] Headers that will be added to the
+     * request
+     * 
+     * @param {ServiceCallback} [callback] callback function; see ServiceCallback
+     * doc in ms-rest index.d.ts for details
+     */
+    getBase64UrlEncoded(options: { customHeaders? : { [headerName: string]: string; } }, callback: ServiceCallback<Buffer>): void;
+    getBase64UrlEncoded(callback: ServiceCallback<Buffer>): void;
+
+    /**
+     * Put value that is base64url encoded
+     *
+     * @param {buffer} stringBody
+     * 
+     * @param {object} [options] Optional Parameters.
+     * 
+     * @param {object} [options.customHeaders] Headers that will be added to the
+     * request
+     * 
+     * @param {ServiceCallback} [callback] callback function; see ServiceCallback
+     * doc in ms-rest index.d.ts for details
+     */
+    putBase64UrlEncoded(stringBody: Buffer, options: { customHeaders? : { [headerName: string]: string; } }, callback: ServiceCallback<void>): void;
+    putBase64UrlEncoded(stringBody: Buffer, callback: ServiceCallback<void>): void;
+
+    /**
+     * Get null value that is expected to be base64url encoded
+     *
+     * @param {object} [options] Optional Parameters.
+     * 
+     * @param {object} [options.customHeaders] Headers that will be added to the
+     * request
+     * 
+     * @param {ServiceCallback} [callback] callback function; see ServiceCallback
+     * doc in ms-rest index.d.ts for details
+     */
+    getNullBase64UrlEncoded(options: { customHeaders? : { [headerName: string]: string; } }, callback: ServiceCallback<Buffer>): void;
+    getNullBase64UrlEncoded(callback: ServiceCallback<Buffer>): void;
 }
 
 /**

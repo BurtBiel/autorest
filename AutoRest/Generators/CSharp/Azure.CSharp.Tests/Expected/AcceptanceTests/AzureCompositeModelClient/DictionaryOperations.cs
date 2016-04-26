@@ -211,10 +211,9 @@ namespace Fixtures.AcceptanceTestsAzureCompositeModelClient
         /// </return>
         public async Task<AzureOperationResponse> PutValidWithHttpMessagesAsync(IDictionary<string, string> defaultProgram = default(IDictionary<string, string>), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
-            DictionaryWrapper complexBody = default(DictionaryWrapper);
+            DictionaryWrapper complexBody = new DictionaryWrapper();
             if (defaultProgram != null)
             {
-                complexBody = new DictionaryWrapper();
                 complexBody.DefaultProgram = defaultProgram;
             }
             // Tracing
@@ -268,9 +267,12 @@ namespace Fixtures.AcceptanceTestsAzureCompositeModelClient
 
             // Serialize Request
             string _requestContent = null;
-            _requestContent = SafeJsonConvert.SerializeObject(complexBody, this.Client.SerializationSettings);
-            _httpRequest.Content = new StringContent(_requestContent, Encoding.UTF8);
-            _httpRequest.Content.Headers.ContentType = MediaTypeHeaderValue.Parse("application/json; charset=utf-8");
+            if(complexBody != null)
+            {
+                _requestContent = SafeJsonConvert.SerializeObject(complexBody, this.Client.SerializationSettings);
+                _httpRequest.Content = new StringContent(_requestContent, Encoding.UTF8);
+                _httpRequest.Content.Headers.ContentType = MediaTypeHeaderValue.Parse("application/json; charset=utf-8");
+            }
             // Set Credentials
             if (this.Client.Credentials != null)
             {
@@ -497,10 +499,9 @@ namespace Fixtures.AcceptanceTestsAzureCompositeModelClient
         /// </return>
         public async Task<AzureOperationResponse> PutEmptyWithHttpMessagesAsync(IDictionary<string, string> defaultProgram = default(IDictionary<string, string>), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
-            DictionaryWrapper complexBody = default(DictionaryWrapper);
+            DictionaryWrapper complexBody = new DictionaryWrapper();
             if (defaultProgram != null)
             {
-                complexBody = new DictionaryWrapper();
                 complexBody.DefaultProgram = defaultProgram;
             }
             // Tracing
@@ -554,9 +555,12 @@ namespace Fixtures.AcceptanceTestsAzureCompositeModelClient
 
             // Serialize Request
             string _requestContent = null;
-            _requestContent = SafeJsonConvert.SerializeObject(complexBody, this.Client.SerializationSettings);
-            _httpRequest.Content = new StringContent(_requestContent, Encoding.UTF8);
-            _httpRequest.Content.Headers.ContentType = MediaTypeHeaderValue.Parse("application/json; charset=utf-8");
+            if(complexBody != null)
+            {
+                _requestContent = SafeJsonConvert.SerializeObject(complexBody, this.Client.SerializationSettings);
+                _httpRequest.Content = new StringContent(_requestContent, Encoding.UTF8);
+                _httpRequest.Content.Headers.ContentType = MediaTypeHeaderValue.Parse("application/json; charset=utf-8");
+            }
             // Set Credentials
             if (this.Client.Credentials != null)
             {

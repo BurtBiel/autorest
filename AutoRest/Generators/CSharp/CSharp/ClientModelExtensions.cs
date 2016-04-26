@@ -221,6 +221,14 @@ namespace Microsoft.Rest.Generator.CSharp
                 {
                     serializationSettings = "new DateTimeRfc1123JsonConverter()";
                 }
+                else if (primaryType.Type == KnownPrimaryType.Base64Url)
+                {
+                    serializationSettings = "new Base64UrlJsonConverter()";
+                }
+                else if (primaryType.Type == KnownPrimaryType.UnixTime)
+                {
+                    serializationSettings = "new UnixTimeJsonConverter()";
+                }
             }
 
             return string.Format(CultureInfo.InvariantCulture,
@@ -264,6 +272,7 @@ namespace Microsoft.Rest.Generator.CSharp
                 || primaryType.Type == KnownPrimaryType.Long 
                 || primaryType.Type == KnownPrimaryType.TimeSpan 
                 || primaryType.Type == KnownPrimaryType.DateTimeRfc1123
+                || primaryType.Type == KnownPrimaryType.UnixTime
                 || primaryType.Type == KnownPrimaryType.Uuid));
         }
 
@@ -348,6 +357,7 @@ namespace Microsoft.Rest.Generator.CSharp
 
             return null;
         }
+
 
         private static void AppendConstraintValidations(string valueReference, Dictionary<Constraint, string> constraints, IndentedStringBuilder sb)
         {

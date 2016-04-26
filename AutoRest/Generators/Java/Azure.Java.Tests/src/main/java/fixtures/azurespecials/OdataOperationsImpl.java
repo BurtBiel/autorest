@@ -57,8 +57,52 @@ public final class OdataOperationsImpl implements OdataOperations {
     interface OdataService {
         @Headers("Content-Type: application/json; charset=utf-8")
         @GET("azurespecials/odata/filter")
-        Call<ResponseBody> getWithFilter(@Query("$filter") String filter, @Query("$top") Integer top, @Query("$orderby") String orderby, @Header("accept-language") String acceptLanguage);
+        Call<ResponseBody> getWithFilter(@Query("$filter") OdataFilter filter, @Query("$top") Integer top, @Query("$orderby") String orderby, @Header("accept-language") String acceptLanguage);
 
+    }
+
+    /**
+     * Specify filter parameter with value '$filter=id gt 5 and name eq 'foo'&amp;$orderby=id&amp;$top=10'.
+     *
+     * @throws ErrorException exception thrown from REST call
+     * @throws IOException exception thrown from serialization/deserialization
+     * @return the {@link ServiceResponse} object if successful.
+     */
+    public ServiceResponse<Void> getWithFilter() throws ErrorException, IOException {
+        final OdataFilter filter = null;
+        final Integer top = null;
+        final String orderby = null;
+        Call<ResponseBody> call = service.getWithFilter(filter, top, orderby, this.client.getAcceptLanguage());
+        return getWithFilterDelegate(call.execute());
+    }
+
+    /**
+     * Specify filter parameter with value '$filter=id gt 5 and name eq 'foo'&amp;$orderby=id&amp;$top=10'.
+     *
+     * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
+     * @throws IllegalArgumentException thrown if callback is null
+     * @return the {@link Call} object
+     */
+    public ServiceCall getWithFilterAsync(final ServiceCallback<Void> serviceCallback) throws IllegalArgumentException {
+        if (serviceCallback == null) {
+            throw new IllegalArgumentException("ServiceCallback is required for async calls.");
+        }
+        final OdataFilter filter = null;
+        final Integer top = null;
+        final String orderby = null;
+        Call<ResponseBody> call = service.getWithFilter(filter, top, orderby, this.client.getAcceptLanguage());
+        final ServiceCall serviceCall = new ServiceCall(call);
+        call.enqueue(new ServiceResponseCallback<Void>(serviceCallback) {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                try {
+                    serviceCallback.success(getWithFilterDelegate(response));
+                } catch (ErrorException | IOException exception) {
+                    serviceCallback.failure(exception);
+                }
+            }
+        });
+        return serviceCall;
     }
 
     /**
@@ -73,7 +117,7 @@ public final class OdataOperationsImpl implements OdataOperations {
      */
     public ServiceResponse<Void> getWithFilter(OdataFilter filter, Integer top, String orderby) throws ErrorException, IOException {
         Validator.validate(filter);
-        Call<ResponseBody> call = service.getWithFilter(this.client.getMapperAdapter().serializeRaw(filter), top, orderby, this.client.getAcceptLanguage());
+        Call<ResponseBody> call = service.getWithFilter(filter, top, orderby, this.client.getAcceptLanguage());
         return getWithFilterDelegate(call.execute());
     }
 
@@ -92,7 +136,7 @@ public final class OdataOperationsImpl implements OdataOperations {
             throw new IllegalArgumentException("ServiceCallback is required for async calls.");
         }
         Validator.validate(filter, serviceCallback);
-        Call<ResponseBody> call = service.getWithFilter(this.client.getMapperAdapter().serializeRaw(filter), top, orderby, this.client.getAcceptLanguage());
+        Call<ResponseBody> call = service.getWithFilter(filter, top, orderby, this.client.getAcceptLanguage());
         final ServiceCall serviceCall = new ServiceCall(call);
         call.enqueue(new ServiceResponseCallback<Void>(serviceCallback) {
             @Override

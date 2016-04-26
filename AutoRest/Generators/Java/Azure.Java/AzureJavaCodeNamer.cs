@@ -5,13 +5,21 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Rest.Generator.ClientModel;
+using Microsoft.Rest.Generator.Java.TemplateModels;
 using Microsoft.Rest.Generator.Azure;
 using System.Globalization;
 
-namespace Microsoft.Rest.Generator.Java
+namespace Microsoft.Rest.Generator.Java.Azure
 {
     public class AzureJavaCodeNamer : JavaCodeNamer
     {
+        public AzureJavaCodeNamer(string nameSpace)
+            : base(nameSpace)
+        {
+        }
+
+        #region normalization
+        
         private static string GetPagingSetting(Dictionary<string, object> extensions, IDictionary<KeyValuePair<string, string>, string> pageClasses, out string nextLinkName)
         {
             // default value
@@ -58,7 +66,7 @@ namespace Microsoft.Rest.Generator.Java
                 throw new ArgumentNullException("serviceClient");
             }
 
-            var convertedTypes = new Dictionary<IType, IType>();
+            var convertedTypes = new Dictionary<ITypeModel, ITypeModel>();
 
             foreach (var method in serviceClient.Methods.Where(m => m.Extensions.ContainsKey(AzureExtensions.PageableExtension)))
             {
@@ -73,33 +81,40 @@ namespace Microsoft.Rest.Generator.Java
                     method.Extensions[AzureExtensions.PageableExtension] = null;
                 }
 
-                foreach (var responseStatus in method.Responses.Where(r => r.Value.Body is CompositeType).Select(s => s.Key).ToArray())
+                foreach (var responseStatus in method.Responses.Where(r => r.Value.Body is CompositeTypeModel).Select(s => s.Key).ToArray())
                 {
-                    var compositType = (CompositeType)method.Responses[responseStatus].Body;
-                    var sequenceType = compositType.Properties.Select(p => p.Type).FirstOrDefault(t => t is SequenceType) as SequenceType;
+                    var compositType = (CompositeTypeModel)method.Responses[responseStatus].Body;
+                    var sequenceType = compositType.Properties.Select(p => p.Type).FirstOrDefault(t => t is SequenceTypeModel) as SequenceTypeModel;
 
                     // if the type is a wrapper over page-able response
                     if (sequenceType != null)
                     {
-                        IType pagedResult;
-                        pagedResult = new SequenceType
+                        ITypeModel pagedResult;
+                        pagedResult = new SequenceTypeModel
                         {
                             ElementType = sequenceType.ElementType,
                             NameFormat = "List<{0}>"
                         };
 
-                        convertedTypes[method.Responses[responseStatus].Body] = pagedResult;
+                        convertedTypes[(ITypeModel)method.Responses[responseStatus].Body] = pagedResult;
                         method.Responses[responseStatus] = new Response(pagedResult, method.Responses[responseStatus].Headers);
                     }
                 }
 
-                if (convertedTypes.ContainsKey(method.ReturnType.Body))
+                if (convertedTypes.ContainsKey((ITypeModel) method.ReturnType.Body))
                 {
-                    method.ReturnType = new Response(convertedTypes[method.ReturnType.Body], method.ReturnType.Headers);
+                    method.ReturnType = new Response(convertedTypes[(ITypeModel)method.ReturnType.Body], method.ReturnType.Headers);
                 }
             }
 
-            Extensions.RemoveUnreferencedTypes(serviceClient, new HashSet<string>(convertedTypes.Keys.Cast<CompositeType>().Select(t => t.Name)));
+            Extensions.RemoveUnreferencedTypes(serviceClient, new HashSet<string>(convertedTypes.Keys.Cast<CompositeTypeModel>().Select(t => t.Name)));
         }
+
+        protected override CompositeTypeModel NewCompositeTypeModel(CompositeType compositeType)
+        {
+            return new AzureCompositeTypeModel(compositeType, _package);
+        }
+
+        #endregion
     }
 }

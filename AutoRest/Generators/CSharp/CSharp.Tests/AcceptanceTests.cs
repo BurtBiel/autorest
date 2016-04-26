@@ -50,6 +50,7 @@ using System.Reflection;
 using Fixtures.PetstoreV2;
 using Fixtures.AcceptanceTestsCompositeBoolIntClient;
 using Fixtures.AcceptanceTestsCustomBaseUri;
+using Fixtures.AcceptanceTestsCustomBaseUriMoreOptions;
 using System.Net.Http;
 using Fixtures.AcceptanceTestsModelFlattening;
 using Fixtures.AcceptanceTestsModelFlattening.Models;
@@ -197,12 +198,16 @@ namespace Microsoft.Rest.Generator.CSharp.Tests
             client.IntModel.PutMin32(Int32.MinValue);
             client.IntModel.PutMax64(Int64.MaxValue);
             client.IntModel.PutMin64(Int64.MinValue);
+            client.IntModel.PutUnixTimeDate(new DateTime(2016, 4, 13, 0, 0, 0));
             client.IntModel.GetNull();
             Assert.Throws<SerializationException>(() => client.IntModel.GetInvalid());
             Assert.Throws<SerializationException>(() => client.IntModel.GetOverflowInt32());
             Assert.Throws<SerializationException>(() => client.IntModel.GetOverflowInt64());
             Assert.Throws<SerializationException>(() => client.IntModel.GetUnderflowInt32());
             Assert.Throws<SerializationException>(() => client.IntModel.GetUnderflowInt64());
+            Assert.Throws<SerializationException>(() => client.IntModel.GetInvalidUnixTime());
+            Assert.Null(client.IntModel.GetNullUnixTime());
+            Assert.Equal(new DateTime(2016, 4, 13, 0, 0, 0), client.IntModel.GetUnixTime());
         }
 
         [Fact]
@@ -275,6 +280,12 @@ namespace Microsoft.Rest.Generator.CSharp.Tests
                 Assert.Null(client.StringModel.GetNotProvided());
                 Assert.Equal(Colors.Redcolor, client.EnumModel.GetNotExpandable());
                 client.EnumModel.PutNotExpandable(Colors.Redcolor);
+                var base64UrlEncodedString = client.StringModel.GetBase64UrlEncoded();
+                var base64EncodedString = client.StringModel.GetBase64Encoded();
+                Assert.Equal(Encoding.UTF8.GetString(base64UrlEncodedString), "a string that gets encoded with base64url");
+                Assert.Equal(Encoding.UTF8.GetString(base64EncodedString), "a string that gets encoded with base64");
+                Assert.Null(client.StringModel.GetNullBase64UrlEncoded());
+                client.StringModel.PutBase64UrlEncoded(Encoding.UTF8.GetBytes("a string that gets encoded with base64url"));
             }
         }
 
@@ -301,21 +312,32 @@ namespace Microsoft.Rest.Generator.CSharp.Tests
                 SwaggerPath("body-file.json"), ExpectedPath("BodyFile"));
             using (var client = new AutoRestSwaggerBATFileService(Fixture.Uri))
             {
-                var stream = client.Files.GetFile();
-                Assert.NotEqual(0, stream.Length);
-                byte[] buffer = new byte[16 * 1024];
+                using (var stream = client.Files.GetFile())
                 using (MemoryStream ms = new MemoryStream())
                 {
-                    int read;
-                    while ((read = stream.Read(buffer, 0, buffer.Length)) > 0)
-                    {
-                        ms.Write(buffer, 0, read);
-                    }
+                    stream.CopyTo(ms);
                     Assert.Equal(8725, ms.Length);
                 }
 
-                var emptyStream = client.Files.GetEmptyFile();
-                Assert.Equal(0, emptyStream.Length);
+                using (var emptyStream = client.Files.GetEmptyFile())
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    emptyStream.CopyTo(ms);
+                    Assert.Equal(0, ms.Length);
+                }
+
+                using (var largeFileStream = client.Files.GetFileLarge())
+                {
+                    //Read the stream into memory a bit at a time to avoid OOM
+                    int bytesRead = 0;
+                    long totalBytesRead = 0;
+                    var buffer = new byte[1024 * 1024];
+                    while ((bytesRead = largeFileStream.Read(buffer, 0, buffer.Length)) > 0)
+                    {
+                        totalBytesRead += bytesRead;
+                    }
+                    Assert.Equal(3000L * 1024 * 1024, totalBytesRead);
+                }
             }
         }
 
@@ -373,7 +395,7 @@ namespace Microsoft.Rest.Generator.CSharp.Tests
                 {
                     memStream.Write(testBytes, 0, testBytes.Length);
                     memStream.Seek(0, SeekOrigin.Begin);
-                    using (StreamReader reader = new StreamReader(client.Formdata.UploadFileViaBody(memStream, "UploadFile.txt"), Encoding.Unicode))
+                    using (StreamReader reader = new StreamReader(client.Formdata.UploadFileViaBody(memStream), Encoding.Unicode))
                     {
                         string actual = reader.ReadToEnd();
                         Assert.Equal(testString, actual);
@@ -641,6 +663,11 @@ namespace Microsoft.Rest.Generator.CSharp.Tests
                 Assert.Equal(new List<Guid?> { guid1, guid2, guid3 }, client.Array.GetUuidValid());
                 client.Array.PutUuidValid(new List<Guid?> { guid1, guid2, guid3 });
                 Assert.Throws<SerializationException>(() => client.Array.GetUuidInvalidChars());
+
+                var base64Url1 = Encoding.UTF8.GetBytes("a string that gets encoded with base64url");
+                var base64Url2 = Encoding.UTF8.GetBytes("test string");
+                var base64Url3 = Encoding.UTF8.GetBytes("Lorem ipsum");
+                Assert.Equal(new List<byte[]> { base64Url1, base64Url2, base64Url3 }, client.Array.GetBase64Url());
             }
         }
 
@@ -950,6 +977,13 @@ namespace Microsoft.Rest.Generator.CSharp.Tests
                 Assert.True(bytesResult.ContainsKey(key));
                 Assert.Equal(bytesNull[key], bytesResult[key], new ByteArrayEqualityComparer());
             }
+            // GET prim/base64url/valid
+            var base64UrlString1 = Encoding.UTF8.GetBytes("a string that gets encoded with base64url");
+            var base64UrlString2 = Encoding.UTF8.GetBytes("test string");
+            var base64UrlString3 = Encoding.UTF8.GetBytes("Lorem ipsum");
+            var base64UrlStringValid = new Dictionary<string, byte[]> {{"0", base64UrlString1}, {"1", base64UrlString2}, {"2", base64UrlString3}};
+            var base64UrlStringResult = client.Dictionary.GetBase64Url();
+            Assert.Equal(base64UrlStringValid, base64UrlStringResult);
         }
 
         private static void TestBasicDictionaryParsing(AutoRestSwaggerBATdictionaryService client)
@@ -1318,6 +1352,10 @@ namespace Microsoft.Rest.Generator.CSharp.Tests
                 Assert.Throws<ValidationException>(() => client.Paths.StringNull(null));
                 client.Paths.StringUrlEncoded();
                 client.Paths.EnumValid(UriColor.Greencolor);
+                client.Paths.Base64Url(Encoding.UTF8.GetBytes("lorem"));
+                var testArray = new List<string> { "ArrayPath1", @"begin!*'();:@ &=+$,/?#[]end", null, "" };
+                client.Paths.ArrayCsvInPath(testArray);
+                client.Paths.UnixTimeUrl(new DateTime(2016, 4, 13, 0, 0, 0));
             }
         }
 
@@ -1762,6 +1800,10 @@ namespace Microsoft.Rest.Generator.CSharp.Tests
         {
             var ex = Assert.Throws<Fixtures.AcceptanceTestsHttp.Models.ErrorException>(() => client.HttpFailure.GetEmptyError());
             Assert.Equal("Operation returned an invalid status code 'BadRequest'", ex.Message);
+
+            var ex2 = Assert.Throws<HttpOperationException>(() => client.HttpFailure.GetNoModelError());
+            Assert.Equal("{\"message\":\"NoErrorModel\",\"status\":400}", ex2.Response.Content);
+
             client.HttpSuccess.Head200();
             Assert.True(client.HttpSuccess.Get200());
             client.HttpSuccess.Put200(true);
@@ -1912,6 +1954,21 @@ namespace Microsoft.Rest.Generator.CSharp.Tests
                 client.Host = string.Format(CultureInfo.InvariantCulture, "{0}.:{1}", client.Host, Fixture.Port);
                 Assert.Equal(HttpStatusCode.OK,
                     client.Paths.GetEmptyWithHttpMessagesAsync("local").Result.Response.StatusCode);
+            }
+        }
+
+        [Fact]
+        public void CustomBaseUriMoreOptionsTests()
+        {
+            SwaggerSpecRunner.RunTests(
+                SwaggerPath("custom-baseUrl-more-options.json"), ExpectedPath("CustomBaseUriMoreOptions"));
+            using (var client = new AutoRestParameterizedCustomHostTestClient())
+            {
+                client.SubscriptionId = "test12";
+                // small modification to the "host" portion to include the port and the '.'
+                client.DnsSuffix = string.Format(CultureInfo.InvariantCulture, "{0}.:{1}", "host", Fixture.Port);
+                Assert.Equal(HttpStatusCode.OK,
+                    client.Paths.GetEmptyWithHttpMessagesAsync("http://lo", "cal", "key1").Result.Response.StatusCode);
             }
         }
 
@@ -2147,10 +2204,11 @@ namespace Microsoft.Rest.Generator.CSharp.Tests
                 //Dictionary
                 var simpleProduct = new SimpleProduct
                 {
-                    BaseProductDescription = "product description",
-                    BaseProductId = "123",
+                    Description = "product description",
+                    ProductId = "123",
                     MaxProductDisplayName = "max name",
-                    Odatavalue = "http://foo"
+                    Odatavalue = "http://foo",
+                    GenericValue = "https://generic"
                 };
                 var resultProduct = client.PutSimpleProduct(simpleProduct);
                 Assert.Equal(JsonConvert.SerializeObject(resultProduct), JsonConvert.SerializeObject(simpleProduct));
@@ -2165,12 +2223,12 @@ namespace Microsoft.Rest.Generator.CSharp.Tests
                 //Dictionary
                 var simpleProduct = new SimpleProduct
                 {
-                    BaseProductDescription = "product description",
-                    BaseProductId = "123",
+                    Description = "product description",
+                    ProductId = "123",
                     MaxProductDisplayName = "max name",
                     Odatavalue = "http://foo"
                 };
-                var resultProduct = client.PostFlattenedSimpleProduct("123", "max name", "product description", "http://foo");
+                var resultProduct = client.PostFlattenedSimpleProduct("123", "max name", "product description", null, "http://foo");
                 Assert.Equal(JsonConvert.SerializeObject(resultProduct), JsonConvert.SerializeObject(simpleProduct));
             }
         }
@@ -2183,15 +2241,15 @@ namespace Microsoft.Rest.Generator.CSharp.Tests
                 //Dictionary
                 var simpleProduct = new SimpleProduct
                 {
-                    BaseProductDescription = "product description",
-                    BaseProductId = "123",
+                    Description = "product description",
+                    ProductId = "123",
                     MaxProductDisplayName = "max name",
                     Odatavalue = "http://foo"
                 };
                 var flattenParameterGroup = new FlattenParameterGroup
                 {
-                    BaseProductDescription = "product description",
-                    BaseProductId = "123",
+                    Description = "product description",
+                    ProductId = "123",
                     MaxProductDisplayName = "max name",
                     Odatavalue = "http://foo", 
                     Name = "groupproduct"
@@ -2258,6 +2316,7 @@ namespace Microsoft.Rest.Generator.CSharp.Tests
         {
             EnsureThrowsWithErrorModel<Error>(expectedStatusCode, operation, errorValidator);
         }
+
 
         private static void EnsureThrowsWithErrorModel<T>(HttpStatusCode expectedStatusCode,
             Action operation, Action<T> errorValidator = null) where T : class

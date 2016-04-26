@@ -15,12 +15,13 @@ from msrest.serialization import Model
 class C(Model):
     """C
 
-    :param str http_code:
+    :param http_code:
+    :type http_code: str
     """ 
 
     _attribute_map = {
         'http_code': {'key': 'httpCode', 'type': 'str'},
     }
 
-    def __init__(self, http_code=None, **kwargs):
+    def __init__(self, http_code=None):
         self.http_code = http_code

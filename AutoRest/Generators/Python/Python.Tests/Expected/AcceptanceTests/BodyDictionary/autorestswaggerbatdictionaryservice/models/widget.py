@@ -15,8 +15,10 @@ from msrest.serialization import Model
 class Widget(Model):
     """Widget
 
-    :param int integer:
-    :param str string:
+    :param integer:
+    :type integer: int
+    :param string:
+    :type string: str
     """ 
 
     _attribute_map = {
@@ -24,6 +26,6 @@ class Widget(Model):
         'string': {'key': 'string', 'type': 'str'},
     }
 
-    def __init__(self, integer=None, string=None, **kwargs):
+    def __init__(self, integer=None, string=None):
         self.integer = integer
         self.string = string

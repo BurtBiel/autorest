@@ -16,19 +16,22 @@ class PagingGetMultiplePagesWithOffsetOptions(Model):
     """
     Additional parameters for the getMultiplePagesWithOffset operation.
 
-    :param int maxresults: Sets the maximum number of items to return in the
+    :param maxresults: Sets the maximum number of items to return in the
      response.
-    :param int offset: Offset of return value
-    :param int timeout: Sets the maximum time that the server can spend
+    :type maxresults: int
+    :param offset: Offset of return value
+    :type offset: int
+    :param timeout: Sets the maximum time that the server can spend
      processing the request, in seconds. The default is 30 seconds. Default
      value: 30 .
+    :type timeout: int
     """ 
 
     _validation = {
         'offset': {'required': True},
     }
 
-    def __init__(self, offset, maxresults=None, timeout=30, **kwargs):
+    def __init__(self, offset, maxresults=None, timeout=30):
         self.maxresults = maxresults
         self.offset = offset
         self.timeout = timeout

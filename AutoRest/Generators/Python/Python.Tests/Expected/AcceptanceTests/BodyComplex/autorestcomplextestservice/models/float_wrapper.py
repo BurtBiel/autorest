@@ -15,8 +15,10 @@ from msrest.serialization import Model
 class FloatWrapper(Model):
     """FloatWrapper
 
-    :param float field1:
-    :param float field2:
+    :param field1:
+    :type field1: float
+    :param field2:
+    :type field2: float
     """ 
 
     _attribute_map = {
@@ -24,6 +26,6 @@ class FloatWrapper(Model):
         'field2': {'key': 'field2', 'type': 'float'},
     }
 
-    def __init__(self, field1=None, field2=None, **kwargs):
+    def __init__(self, field1=None, field2=None):
         self.field1 = field1
         self.field2 = field2

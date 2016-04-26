@@ -15,12 +15,14 @@ from msrest.serialization import Model
 class Product(Model):
     """Product
 
-    :param ProductProperties properties:
+    :param properties:
+    :type properties: :class:`ProductProperties
+     <fixtures.acceptancetestspaging.models.ProductProperties>`
     """ 
 
     _attribute_map = {
         'properties': {'key': 'properties', 'type': 'ProductProperties'},
     }
 
-    def __init__(self, properties=None, **kwargs):
+    def __init__(self, properties=None):
         self.properties = properties

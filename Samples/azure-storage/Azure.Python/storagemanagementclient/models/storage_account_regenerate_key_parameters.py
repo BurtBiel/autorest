@@ -8,7 +8,8 @@ from msrest.serialization import Model
 class StorageAccountRegenerateKeyParameters(Model):
     """StorageAccountRegenerateKeyParameters
 
-    :param str key_name:
+    :param key_name:
+    :type key_name: str
     """ 
 
     _validation = {
@@ -19,5 +20,5 @@ class StorageAccountRegenerateKeyParameters(Model):
         'key_name': {'key': 'keyName', 'type': 'str'},
     }
 
-    def __init__(self, key_name, **kwargs):
+    def __init__(self, key_name):
         self.key_name = key_name

@@ -17,12 +17,14 @@ class Foo(Model):
     The URIs that are used to perform a retrieval of a public blob, queue or
     table object.
 
-    :param Bar bar_point: Bar point
+    :param bar_point: Bar point
+    :type bar_point: :class:`Bar
+     <fixtures.acceptancetestsstoragemanagementclient.models.Bar>`
     """ 
 
     _attribute_map = {
         'bar_point': {'key': 'Bar.Point', 'type': 'Bar'},
     }
 
-    def __init__(self, bar_point=None, **kwargs):
+    def __init__(self, bar_point=None):
         self.bar_point = bar_point

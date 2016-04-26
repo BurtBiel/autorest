@@ -16,13 +16,15 @@ class PagingGetMultiplePagesOptions(Model):
     """
     Additional parameters for the getMultiplePages operation.
 
-    :param int maxresults: Sets the maximum number of items to return in the
+    :param maxresults: Sets the maximum number of items to return in the
      response.
-    :param int timeout: Sets the maximum time that the server can spend
+    :type maxresults: int
+    :param timeout: Sets the maximum time that the server can spend
      processing the request, in seconds. The default is 30 seconds. Default
      value: 30 .
+    :type timeout: int
     """ 
 
-    def __init__(self, maxresults=None, timeout=30, **kwargs):
+    def __init__(self, maxresults=None, timeout=30):
         self.maxresults = maxresults
         self.timeout = timeout

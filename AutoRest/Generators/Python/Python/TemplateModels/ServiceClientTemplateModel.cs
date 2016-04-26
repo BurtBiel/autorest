@@ -23,6 +23,7 @@ namespace Microsoft.Rest.Generator.Python
                 .ForEach(m => MethodTemplateModels.Add(new MethodTemplateModel(m, serviceClient)));
 
             ModelTypes.ForEach(m => ModelTemplateModels.Add(new ModelTemplateModel(m, serviceClient)));
+            ServiceClient = serviceClient;
             this.Version = this.ApiVersion;
 
             this.HasAnyModel = false;
@@ -35,6 +36,8 @@ namespace Microsoft.Rest.Generator.Python
         }
 
         public bool IsCustomBaseUri { get; private set; }
+
+        public ServiceClient ServiceClient { get; set; }
 
         public List<MethodTemplateModel> MethodTemplateModels { get; private set; }
 
@@ -102,7 +105,10 @@ namespace Microsoft.Rest.Generator.Python
             }
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "ValueError"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "Microsoft.Rest.Generator.Utilities.IndentedStringBuilder.AppendLine(System.String)")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "ValueError"),
+            System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "TypeError"),
+            System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "str"),
+            System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "Microsoft.Rest.Generator.Utilities.IndentedStringBuilder.AppendLine(System.String)")]
         public virtual string ValidateRequiredParameters
         {
             get
@@ -115,9 +121,31 @@ namespace Microsoft.Rest.Generator.Python
                         builder.
                             AppendFormat("if {0} is None:", property.Name.ToPythonCase()).AppendLine().
                             Indent().
-                                AppendLine(string.Format(CultureInfo.InvariantCulture, "raise ValueError('{0} must not be None.')", property.Name.ToPythonCase())).
+                                AppendLine(string.Format(CultureInfo.InvariantCulture, "raise ValueError(\"Parameter '{0}' must not be None.\")", property.Name.ToPythonCase())).
                             Outdent();
+                        if (property.Type.IsPrimaryType(KnownPrimaryType.String))
+                        {
+                            builder.
+                                AppendFormat("if not isinstance({0}, str):", property.Name.ToPythonCase()).AppendLine().
+                                Indent().
+                                    AppendLine(string.Format(CultureInfo.InvariantCulture, "raise TypeError(\"Parameter '{0}' must be str.\")", property.Name.ToPythonCase())).
+                                Outdent();
+                        }
                     }
+                    else
+                    {
+                        if (property.Type.IsPrimaryType(KnownPrimaryType.String))
+                        {
+                            builder.
+                                AppendFormat("if {0} is not None and not isinstance({0}, str):", property.Name.ToPythonCase()).AppendLine().
+                                Indent().
+                                    AppendLine(string.Format(CultureInfo.InvariantCulture, "raise TypeError(\"Optional parameter '{0}' must be str.\")", property.Name.ToPythonCase())).
+                                Outdent();
+                        }
+
+                    }
+                    
+
                 }
                 return builder.ToString();
             }
@@ -135,7 +163,15 @@ namespace Microsoft.Rest.Generator.Python
         {
             get
             {
-                return "\"msrest>=0.1.0\"";
+                return "\"msrest>=0.2.0\"";
+            }
+        }
+       
+        public virtual string CredentialObject
+        {
+            get
+            {
+                return "A msrest Authentication object<msrest.authentication>";
             }
         }
 
@@ -188,6 +224,56 @@ namespace Microsoft.Rest.Generator.Python
             }
 
             return docString;
+        }
+
+        /// <summary>
+        /// Provides the type of the modelProperty
+        /// </summary>
+        /// <param name="type">Parameter type to be documented</param>
+        /// <returns>Parameter name in the correct jsdoc notation</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1308:NormalizeStringsToUppercase")]
+        public string GetPropertyDocumentationType(IType type)
+        {
+            if (type == null)
+            {
+                throw new ArgumentNullException("type");
+            }
+
+            string result = "object";
+            var primaryType = type as PrimaryType;
+            var listType = type as SequenceType;
+            if (primaryType != null)
+            {
+                if (primaryType.Type == KnownPrimaryType.Credentials)
+                {
+                    result = string.Format(CultureInfo.InvariantCulture, ":mod:`{0}`", CredentialObject);
+                }
+                else
+                {
+                    result = type.Name;
+                }
+            }
+            else if (listType != null)
+            {
+                result = string.Format(CultureInfo.InvariantCulture, "list of {0}", GetPropertyDocumentationType(listType.ElementType));
+            }
+            else if (type is EnumType)
+            {
+                result = "str";
+            }
+            else if (type is DictionaryType)
+            {
+                result = "dict";
+            }
+            else if (type is CompositeType)
+            {
+                var modelNamespace = ServiceClient.Name.ToPythonCase().Replace("_", "");
+                if (!ServiceClient.Namespace.IsNullOrEmpty())
+                    modelNamespace = ServiceClient.Namespace.ToPythonCase().Replace("_", "");
+                result = string.Format(CultureInfo.InvariantCulture, ":class:`{0} <{1}.models.{0}>`", type.Name, modelNamespace);
+            }
+
+            return result;
         }
 
         public virtual bool NeedsExtraImport

@@ -8,8 +8,10 @@ from msrest.serialization import Model
 class Category(Model):
     """Category
 
-    :param long id:
-    :param str name:
+    :param id:
+    :type id: long
+    :param name:
+    :type name: str
     """ 
 
     _attribute_map = {
@@ -17,6 +19,6 @@ class Category(Model):
         'name': {'key': 'name', 'type': 'str'},
     }
 
-    def __init__(self, id=None, name=None, **kwargs):
+    def __init__(self, id=None, name=None):
         self.id = id
         self.name = name

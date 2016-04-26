@@ -43,12 +43,17 @@ class LRORetrysOperations(object):
         poll returns a ‘200’ with ProvisioningState=’Succeeded’
 
         :param product: Product to put
-        :type product: Product
+        :type product: :class:`Product
+         <fixtures.acceptancetestslro.models.Product>`
         :param dict custom_headers: headers that will be added to the request
-        :param boolean raw: returns the direct response alongside the
+        :param bool raw: returns the direct response alongside the
          deserialized response
-        :rtype: Product
-        :rtype: msrest.pipeline.ClientRawResponse if raw=True
+        :rtype:
+         :class:`AzureOperationPoller<msrestazure.azure_operation.AzureOperationPoller>`
+         instance that returns :class:`Product
+         <fixtures.acceptancetestslro.models.Product>`
+        :rtype: :class:`ClientRawResponse<msrest.pipeline.ClientRawResponse>`
+         if raw=true
         """
         # Construct URL
         url = '/lro/retryerror/put/201/creating/succeeded/200'
@@ -106,6 +111,10 @@ class LRORetrysOperations(object):
 
             return deserialized
 
+        if raw:
+            response = long_running_send()
+            return get_long_running_output(response)
+
         long_running_operation_timeout = operation_config.get(
             'long_running_operation_timeout',
             self.config.long_running_operation_timeout)
@@ -122,12 +131,17 @@ class LRORetrysOperations(object):
         Azure-AsyncOperation header for operation status
 
         :param product: Product to put
-        :type product: Product
+        :type product: :class:`Product
+         <fixtures.acceptancetestslro.models.Product>`
         :param dict custom_headers: headers that will be added to the request
-        :param boolean raw: returns the direct response alongside the
+        :param bool raw: returns the direct response alongside the
          deserialized response
-        :rtype: Product
-        :rtype: msrest.pipeline.ClientRawResponse if raw=True
+        :rtype:
+         :class:`AzureOperationPoller<msrestazure.azure_operation.AzureOperationPoller>`
+         instance that returns :class:`Product
+         <fixtures.acceptancetestslro.models.Product>`
+        :rtype: :class:`ClientRawResponse<msrest.pipeline.ClientRawResponse>`
+         if raw=true
         """
         # Construct URL
         url = '/lro/retryerror/putasync/retry/succeeded'
@@ -190,6 +204,10 @@ class LRORetrysOperations(object):
 
             return deserialized
 
+        if raw:
+            response = long_running_send()
+            return get_long_running_output(response)
+
         long_running_operation_timeout = operation_config.get(
             'long_running_operation_timeout',
             self.config.long_running_operation_timeout)
@@ -206,10 +224,14 @@ class LRORetrysOperations(object):
         poll returns a ‘200’ with ProvisioningState=’Succeeded’
 
         :param dict custom_headers: headers that will be added to the request
-        :param boolean raw: returns the direct response alongside the
+        :param bool raw: returns the direct response alongside the
          deserialized response
-        :rtype: Product
-        :rtype: msrest.pipeline.ClientRawResponse if raw=True
+        :rtype:
+         :class:`AzureOperationPoller<msrestazure.azure_operation.AzureOperationPoller>`
+         instance that returns :class:`Product
+         <fixtures.acceptancetestslro.models.Product>`
+        :rtype: :class:`ClientRawResponse<msrest.pipeline.ClientRawResponse>`
+         if raw=true
         """
         # Construct URL
         url = '/lro/retryerror/delete/provisioning/202/accepted/200/succeeded'
@@ -270,6 +292,10 @@ class LRORetrysOperations(object):
 
             return deserialized
 
+        if raw:
+            response = long_running_send()
+            return get_long_running_output(response)
+
         long_running_operation_timeout = operation_config.get(
             'long_running_operation_timeout',
             self.config.long_running_operation_timeout)
@@ -285,10 +311,13 @@ class LRORetrysOperations(object):
         a ‘200’ with ProvisioningState=’Succeeded’
 
         :param dict custom_headers: headers that will be added to the request
-        :param boolean raw: returns the direct response alongside the
+        :param bool raw: returns the direct response alongside the
          deserialized response
-        :rtype: None
-        :rtype: msrest.pipeline.ClientRawResponse if raw=True
+        :rtype:
+         :class:`AzureOperationPoller<msrestazure.azure_operation.AzureOperationPoller>`
+         instance that returns None
+        :rtype: :class:`ClientRawResponse<msrest.pipeline.ClientRawResponse>`
+         if raw=true
         """
         # Construct URL
         url = '/lro/retryerror/delete/202/retry/200'
@@ -334,6 +363,10 @@ class LRORetrysOperations(object):
                 })
                 return client_raw_response
 
+        if raw:
+            response = long_running_send()
+            return get_long_running_output(response)
+
         long_running_operation_timeout = operation_config.get(
             'long_running_operation_timeout',
             self.config.long_running_operation_timeout)
@@ -349,10 +382,13 @@ class LRORetrysOperations(object):
         Azure-AsyncOperation header for operation status
 
         :param dict custom_headers: headers that will be added to the request
-        :param boolean raw: returns the direct response alongside the
+        :param bool raw: returns the direct response alongside the
          deserialized response
-        :rtype: None
-        :rtype: msrest.pipeline.ClientRawResponse if raw=True
+        :rtype:
+         :class:`AzureOperationPoller<msrestazure.azure_operation.AzureOperationPoller>`
+         instance that returns None
+        :rtype: :class:`ClientRawResponse<msrest.pipeline.ClientRawResponse>`
+         if raw=true
         """
         # Construct URL
         url = '/lro/retryerror/deleteasync/retry/succeeded'
@@ -399,6 +435,10 @@ class LRORetrysOperations(object):
                 })
                 return client_raw_response
 
+        if raw:
+            response = long_running_send()
+            return get_long_running_output(response)
+
         long_running_operation_timeout = operation_config.get(
             'long_running_operation_timeout',
             self.config.long_running_operation_timeout)
@@ -414,12 +454,16 @@ class LRORetrysOperations(object):
         return a 200 with a response body after success
 
         :param product: Product to put
-        :type product: Product
+        :type product: :class:`Product
+         <fixtures.acceptancetestslro.models.Product>`
         :param dict custom_headers: headers that will be added to the request
-        :param boolean raw: returns the direct response alongside the
+        :param bool raw: returns the direct response alongside the
          deserialized response
-        :rtype: None
-        :rtype: msrest.pipeline.ClientRawResponse if raw=True
+        :rtype:
+         :class:`AzureOperationPoller<msrestazure.azure_operation.AzureOperationPoller>`
+         instance that returns None
+        :rtype: :class:`ClientRawResponse<msrest.pipeline.ClientRawResponse>`
+         if raw=true
         """
         # Construct URL
         url = '/lro/retryerror/post/202/retry/200'
@@ -472,6 +516,10 @@ class LRORetrysOperations(object):
                 })
                 return client_raw_response
 
+        if raw:
+            response = long_running_send()
+            return get_long_running_output(response)
+
         long_running_operation_timeout = operation_config.get(
             'long_running_operation_timeout',
             self.config.long_running_operation_timeout)
@@ -488,12 +536,16 @@ class LRORetrysOperations(object):
         Azure-AsyncOperation header for operation status
 
         :param product: Product to put
-        :type product: Product
+        :type product: :class:`Product
+         <fixtures.acceptancetestslro.models.Product>`
         :param dict custom_headers: headers that will be added to the request
-        :param boolean raw: returns the direct response alongside the
+        :param bool raw: returns the direct response alongside the
          deserialized response
-        :rtype: None
-        :rtype: msrest.pipeline.ClientRawResponse if raw=True
+        :rtype:
+         :class:`AzureOperationPoller<msrestazure.azure_operation.AzureOperationPoller>`
+         instance that returns None
+        :rtype: :class:`ClientRawResponse<msrest.pipeline.ClientRawResponse>`
+         if raw=true
         """
         # Construct URL
         url = '/lro/retryerror/postasync/retry/succeeded'
@@ -546,6 +598,10 @@ class LRORetrysOperations(object):
                     'Retry-After': 'int',
                 })
                 return client_raw_response
+
+        if raw:
+            response = long_running_send()
+            return get_long_running_output(response)
 
         long_running_operation_timeout = operation_config.get(
             'long_running_operation_timeout',

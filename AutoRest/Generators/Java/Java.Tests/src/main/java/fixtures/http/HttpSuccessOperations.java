@@ -44,7 +44,7 @@ public interface HttpSuccessOperations {
      *
      * @throws ErrorException exception thrown from REST call
      * @throws IOException exception thrown from serialization/deserialization
-     * @return the Boolean object wrapped in {@link ServiceResponse} if successful.
+     * @return the boolean object wrapped in {@link ServiceResponse} if successful.
      */
     ServiceResponse<Boolean> get200() throws ErrorException, IOException;
 
@@ -57,6 +57,23 @@ public interface HttpSuccessOperations {
      */
     ServiceCall get200Async(final ServiceCallback<Boolean> serviceCallback) throws IllegalArgumentException;
 
+    /**
+     * Put boolean value true returning 200 success.
+     *
+     * @throws ErrorException exception thrown from REST call
+     * @throws IOException exception thrown from serialization/deserialization
+     * @return the {@link ServiceResponse} object if successful.
+     */
+    ServiceResponse<Void> put200() throws ErrorException, IOException;
+
+    /**
+     * Put boolean value true returning 200 success.
+     *
+     * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
+     * @throws IllegalArgumentException thrown if callback is null
+     * @return the {@link ServiceCall} object
+     */
+    ServiceCall put200Async(final ServiceCallback<Void> serviceCallback) throws IllegalArgumentException;
     /**
      * Put boolean value true returning 200 success.
      *
@@ -80,6 +97,23 @@ public interface HttpSuccessOperations {
     /**
      * Patch true Boolean value in request returning 200.
      *
+     * @throws ErrorException exception thrown from REST call
+     * @throws IOException exception thrown from serialization/deserialization
+     * @return the {@link ServiceResponse} object if successful.
+     */
+    ServiceResponse<Void> patch200() throws ErrorException, IOException;
+
+    /**
+     * Patch true Boolean value in request returning 200.
+     *
+     * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
+     * @throws IllegalArgumentException thrown if callback is null
+     * @return the {@link ServiceCall} object
+     */
+    ServiceCall patch200Async(final ServiceCallback<Void> serviceCallback) throws IllegalArgumentException;
+    /**
+     * Patch true Boolean value in request returning 200.
+     *
      * @param booleanValue Simple boolean value true
      * @throws ErrorException exception thrown from REST call
      * @throws IOException exception thrown from serialization/deserialization
@@ -97,6 +131,23 @@ public interface HttpSuccessOperations {
      */
     ServiceCall patch200Async(Boolean booleanValue, final ServiceCallback<Void> serviceCallback) throws IllegalArgumentException;
 
+    /**
+     * Post bollean value true in request that returns a 200.
+     *
+     * @throws ErrorException exception thrown from REST call
+     * @throws IOException exception thrown from serialization/deserialization
+     * @return the {@link ServiceResponse} object if successful.
+     */
+    ServiceResponse<Void> post200() throws ErrorException, IOException;
+
+    /**
+     * Post bollean value true in request that returns a 200.
+     *
+     * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
+     * @throws IllegalArgumentException thrown if callback is null
+     * @return the {@link ServiceCall} object
+     */
+    ServiceCall post200Async(final ServiceCallback<Void> serviceCallback) throws IllegalArgumentException;
     /**
      * Post bollean value true in request that returns a 200.
      *
@@ -120,6 +171,23 @@ public interface HttpSuccessOperations {
     /**
      * Delete simple boolean value true returns 200.
      *
+     * @throws ErrorException exception thrown from REST call
+     * @throws IOException exception thrown from serialization/deserialization
+     * @return the {@link ServiceResponse} object if successful.
+     */
+    ServiceResponse<Void> delete200() throws ErrorException, IOException;
+
+    /**
+     * Delete simple boolean value true returns 200.
+     *
+     * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
+     * @throws IllegalArgumentException thrown if callback is null
+     * @return the {@link ServiceCall} object
+     */
+    ServiceCall delete200Async(final ServiceCallback<Void> serviceCallback) throws IllegalArgumentException;
+    /**
+     * Delete simple boolean value true returns 200.
+     *
      * @param booleanValue Simple boolean value true
      * @throws ErrorException exception thrown from REST call
      * @throws IOException exception thrown from serialization/deserialization
@@ -137,6 +205,23 @@ public interface HttpSuccessOperations {
      */
     ServiceCall delete200Async(Boolean booleanValue, final ServiceCallback<Void> serviceCallback) throws IllegalArgumentException;
 
+    /**
+     * Put true Boolean value in request returns 201.
+     *
+     * @throws ErrorException exception thrown from REST call
+     * @throws IOException exception thrown from serialization/deserialization
+     * @return the {@link ServiceResponse} object if successful.
+     */
+    ServiceResponse<Void> put201() throws ErrorException, IOException;
+
+    /**
+     * Put true Boolean value in request returns 201.
+     *
+     * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
+     * @throws IllegalArgumentException thrown if callback is null
+     * @return the {@link ServiceCall} object
+     */
+    ServiceCall put201Async(final ServiceCallback<Void> serviceCallback) throws IllegalArgumentException;
     /**
      * Put true Boolean value in request returns 201.
      *
@@ -160,6 +245,23 @@ public interface HttpSuccessOperations {
     /**
      * Post true Boolean value in request returns 201 (Created).
      *
+     * @throws ErrorException exception thrown from REST call
+     * @throws IOException exception thrown from serialization/deserialization
+     * @return the {@link ServiceResponse} object if successful.
+     */
+    ServiceResponse<Void> post201() throws ErrorException, IOException;
+
+    /**
+     * Post true Boolean value in request returns 201 (Created).
+     *
+     * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
+     * @throws IllegalArgumentException thrown if callback is null
+     * @return the {@link ServiceCall} object
+     */
+    ServiceCall post201Async(final ServiceCallback<Void> serviceCallback) throws IllegalArgumentException;
+    /**
+     * Post true Boolean value in request returns 201 (Created).
+     *
      * @param booleanValue Simple boolean value true
      * @throws ErrorException exception thrown from REST call
      * @throws IOException exception thrown from serialization/deserialization
@@ -177,6 +279,23 @@ public interface HttpSuccessOperations {
      */
     ServiceCall post201Async(Boolean booleanValue, final ServiceCallback<Void> serviceCallback) throws IllegalArgumentException;
 
+    /**
+     * Put true Boolean value in request returns 202 (Accepted).
+     *
+     * @throws ErrorException exception thrown from REST call
+     * @throws IOException exception thrown from serialization/deserialization
+     * @return the {@link ServiceResponse} object if successful.
+     */
+    ServiceResponse<Void> put202() throws ErrorException, IOException;
+
+    /**
+     * Put true Boolean value in request returns 202 (Accepted).
+     *
+     * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
+     * @throws IllegalArgumentException thrown if callback is null
+     * @return the {@link ServiceCall} object
+     */
+    ServiceCall put202Async(final ServiceCallback<Void> serviceCallback) throws IllegalArgumentException;
     /**
      * Put true Boolean value in request returns 202 (Accepted).
      *
@@ -200,6 +319,23 @@ public interface HttpSuccessOperations {
     /**
      * Patch true Boolean value in request returns 202.
      *
+     * @throws ErrorException exception thrown from REST call
+     * @throws IOException exception thrown from serialization/deserialization
+     * @return the {@link ServiceResponse} object if successful.
+     */
+    ServiceResponse<Void> patch202() throws ErrorException, IOException;
+
+    /**
+     * Patch true Boolean value in request returns 202.
+     *
+     * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
+     * @throws IllegalArgumentException thrown if callback is null
+     * @return the {@link ServiceCall} object
+     */
+    ServiceCall patch202Async(final ServiceCallback<Void> serviceCallback) throws IllegalArgumentException;
+    /**
+     * Patch true Boolean value in request returns 202.
+     *
      * @param booleanValue Simple boolean value true
      * @throws ErrorException exception thrown from REST call
      * @throws IOException exception thrown from serialization/deserialization
@@ -220,6 +356,23 @@ public interface HttpSuccessOperations {
     /**
      * Post true Boolean value in request returns 202 (Accepted).
      *
+     * @throws ErrorException exception thrown from REST call
+     * @throws IOException exception thrown from serialization/deserialization
+     * @return the {@link ServiceResponse} object if successful.
+     */
+    ServiceResponse<Void> post202() throws ErrorException, IOException;
+
+    /**
+     * Post true Boolean value in request returns 202 (Accepted).
+     *
+     * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
+     * @throws IllegalArgumentException thrown if callback is null
+     * @return the {@link ServiceCall} object
+     */
+    ServiceCall post202Async(final ServiceCallback<Void> serviceCallback) throws IllegalArgumentException;
+    /**
+     * Post true Boolean value in request returns 202 (Accepted).
+     *
      * @param booleanValue Simple boolean value true
      * @throws ErrorException exception thrown from REST call
      * @throws IOException exception thrown from serialization/deserialization
@@ -237,6 +390,23 @@ public interface HttpSuccessOperations {
      */
     ServiceCall post202Async(Boolean booleanValue, final ServiceCallback<Void> serviceCallback) throws IllegalArgumentException;
 
+    /**
+     * Delete true Boolean value in request returns 202 (accepted).
+     *
+     * @throws ErrorException exception thrown from REST call
+     * @throws IOException exception thrown from serialization/deserialization
+     * @return the {@link ServiceResponse} object if successful.
+     */
+    ServiceResponse<Void> delete202() throws ErrorException, IOException;
+
+    /**
+     * Delete true Boolean value in request returns 202 (accepted).
+     *
+     * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
+     * @throws IllegalArgumentException thrown if callback is null
+     * @return the {@link ServiceCall} object
+     */
+    ServiceCall delete202Async(final ServiceCallback<Void> serviceCallback) throws IllegalArgumentException;
     /**
      * Delete true Boolean value in request returns 202 (accepted).
      *
@@ -278,6 +448,23 @@ public interface HttpSuccessOperations {
     /**
      * Put true Boolean value in request returns 204 (no content).
      *
+     * @throws ErrorException exception thrown from REST call
+     * @throws IOException exception thrown from serialization/deserialization
+     * @return the {@link ServiceResponse} object if successful.
+     */
+    ServiceResponse<Void> put204() throws ErrorException, IOException;
+
+    /**
+     * Put true Boolean value in request returns 204 (no content).
+     *
+     * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
+     * @throws IllegalArgumentException thrown if callback is null
+     * @return the {@link ServiceCall} object
+     */
+    ServiceCall put204Async(final ServiceCallback<Void> serviceCallback) throws IllegalArgumentException;
+    /**
+     * Put true Boolean value in request returns 204 (no content).
+     *
      * @param booleanValue Simple boolean value true
      * @throws ErrorException exception thrown from REST call
      * @throws IOException exception thrown from serialization/deserialization
@@ -295,6 +482,23 @@ public interface HttpSuccessOperations {
      */
     ServiceCall put204Async(Boolean booleanValue, final ServiceCallback<Void> serviceCallback) throws IllegalArgumentException;
 
+    /**
+     * Patch true Boolean value in request returns 204 (no content).
+     *
+     * @throws ErrorException exception thrown from REST call
+     * @throws IOException exception thrown from serialization/deserialization
+     * @return the {@link ServiceResponse} object if successful.
+     */
+    ServiceResponse<Void> patch204() throws ErrorException, IOException;
+
+    /**
+     * Patch true Boolean value in request returns 204 (no content).
+     *
+     * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
+     * @throws IllegalArgumentException thrown if callback is null
+     * @return the {@link ServiceCall} object
+     */
+    ServiceCall patch204Async(final ServiceCallback<Void> serviceCallback) throws IllegalArgumentException;
     /**
      * Patch true Boolean value in request returns 204 (no content).
      *
@@ -318,6 +522,23 @@ public interface HttpSuccessOperations {
     /**
      * Post true Boolean value in request returns 204 (no content).
      *
+     * @throws ErrorException exception thrown from REST call
+     * @throws IOException exception thrown from serialization/deserialization
+     * @return the {@link ServiceResponse} object if successful.
+     */
+    ServiceResponse<Void> post204() throws ErrorException, IOException;
+
+    /**
+     * Post true Boolean value in request returns 204 (no content).
+     *
+     * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
+     * @throws IllegalArgumentException thrown if callback is null
+     * @return the {@link ServiceCall} object
+     */
+    ServiceCall post204Async(final ServiceCallback<Void> serviceCallback) throws IllegalArgumentException;
+    /**
+     * Post true Boolean value in request returns 204 (no content).
+     *
      * @param booleanValue Simple boolean value true
      * @throws ErrorException exception thrown from REST call
      * @throws IOException exception thrown from serialization/deserialization
@@ -335,6 +556,23 @@ public interface HttpSuccessOperations {
      */
     ServiceCall post204Async(Boolean booleanValue, final ServiceCallback<Void> serviceCallback) throws IllegalArgumentException;
 
+    /**
+     * Delete true Boolean value in request returns 204 (no content).
+     *
+     * @throws ErrorException exception thrown from REST call
+     * @throws IOException exception thrown from serialization/deserialization
+     * @return the {@link ServiceResponse} object if successful.
+     */
+    ServiceResponse<Void> delete204() throws ErrorException, IOException;
+
+    /**
+     * Delete true Boolean value in request returns 204 (no content).
+     *
+     * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
+     * @throws IllegalArgumentException thrown if callback is null
+     * @return the {@link ServiceCall} object
+     */
+    ServiceCall delete204Async(final ServiceCallback<Void> serviceCallback) throws IllegalArgumentException;
     /**
      * Delete true Boolean value in request returns 204 (no content).
      *

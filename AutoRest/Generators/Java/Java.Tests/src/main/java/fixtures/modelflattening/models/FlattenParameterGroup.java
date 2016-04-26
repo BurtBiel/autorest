@@ -30,19 +30,25 @@ public class FlattenParameterGroup {
      * different product_id than uberX in Los Angeles.
      */
     @JsonProperty(value = "", required = true)
-    private String baseProductId;
+    private String productId;
 
     /**
      * Description of product.
      */
     @JsonProperty(value = "")
-    private String baseProductDescription;
+    private String description;
 
     /**
      * Display name of product.
      */
     @JsonProperty(value = "", required = true)
     private String maxProductDisplayName;
+
+    /**
+     * Generic URL value.
+     */
+    @JsonProperty(value = "")
+    private String genericValue;
 
     /**
      * URL value.
@@ -69,39 +75,39 @@ public class FlattenParameterGroup {
     }
 
     /**
-     * Get the baseProductId value.
+     * Get the productId value.
      *
-     * @return the baseProductId value
+     * @return the productId value
      */
-    public String getBaseProductId() {
-        return this.baseProductId;
+    public String getProductId() {
+        return this.productId;
     }
 
     /**
-     * Set the baseProductId value.
+     * Set the productId value.
      *
-     * @param baseProductId the baseProductId value to set
+     * @param productId the productId value to set
      */
-    public void setBaseProductId(String baseProductId) {
-        this.baseProductId = baseProductId;
+    public void setProductId(String productId) {
+        this.productId = productId;
     }
 
     /**
-     * Get the baseProductDescription value.
+     * Get the description value.
      *
-     * @return the baseProductDescription value
+     * @return the description value
      */
-    public String getBaseProductDescription() {
-        return this.baseProductDescription;
+    public String getDescription() {
+        return this.description;
     }
 
     /**
-     * Set the baseProductDescription value.
+     * Set the description value.
      *
-     * @param baseProductDescription the baseProductDescription value to set
+     * @param description the description value to set
      */
-    public void setBaseProductDescription(String baseProductDescription) {
-        this.baseProductDescription = baseProductDescription;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     /**
@@ -120,6 +126,24 @@ public class FlattenParameterGroup {
      */
     public void setMaxProductDisplayName(String maxProductDisplayName) {
         this.maxProductDisplayName = maxProductDisplayName;
+    }
+
+    /**
+     * Get the genericValue value.
+     *
+     * @return the genericValue value
+     */
+    public String getGenericValue() {
+        return this.genericValue;
+    }
+
+    /**
+     * Set the genericValue value.
+     *
+     * @param genericValue the genericValue value to set
+     */
+    public void setGenericValue(String genericValue) {
+        this.genericValue = genericValue;
     }
 
     /**

@@ -91,7 +91,7 @@ namespace Microsoft.Rest.Generator.Ruby
             get
             {
                 List<string> declarations = new List<string>();
-                foreach (var parameter in LocalParameters)
+                foreach (var parameter in LocalParameters.Where(p => !p.IsConstant))
                 {
                     string format = "{0}";
                     if (!parameter.IsRequired)
@@ -129,7 +129,7 @@ namespace Microsoft.Rest.Generator.Ruby
         {
             get
             {
-                var invocationParams = LocalParameters.Select(p => p.Name).ToList();
+                var invocationParams = LocalParameters.Where(p => !p.IsConstant).Select(p => p.Name).ToList();
                 invocationParams.Add("custom_headers");
 
                 return string.Join(", ", invocationParams);
@@ -280,7 +280,7 @@ namespace Microsoft.Rest.Generator.Ruby
             builder.AppendLine(serializationLogic);
 
             // After that - generate JSON object after serializing each component.
-            return builder.AppendLine("{0} = JSON.generate({1}, quirks_mode: true)", outputVariable, inputVariable).ToString();
+            return builder.AppendLine("{0} = {1} != nil ? JSON.generate({1}, quirks_mode: true) : nil", outputVariable, inputVariable).ToString();
         }
 
         /// <summary>

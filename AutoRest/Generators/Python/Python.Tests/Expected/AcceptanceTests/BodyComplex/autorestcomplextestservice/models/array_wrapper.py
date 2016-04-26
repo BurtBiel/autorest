@@ -15,12 +15,13 @@ from msrest.serialization import Model
 class ArrayWrapper(Model):
     """ArrayWrapper
 
-    :param list array:
+    :param array:
+    :type array: list of str
     """ 
 
     _attribute_map = {
         'array': {'key': 'array', 'type': '[str]'},
     }
 
-    def __init__(self, array=None, **kwargs):
+    def __init__(self, array=None):
         self.array = array

@@ -15,7 +15,8 @@ from msrest.serialization import Model
 class AvailabilitySetUpdateParameters(Model):
     """AvailabilitySetUpdateParameters
 
-    :param dict tags:
+    :param tags:
+    :type tags: dict
     """ 
 
     _validation = {
@@ -26,5 +27,5 @@ class AvailabilitySetUpdateParameters(Model):
         'tags': {'key': 'tags', 'type': '{str}'},
     }
 
-    def __init__(self, tags, **kwargs):
+    def __init__(self, tags):
         self.tags = tags

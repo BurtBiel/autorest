@@ -63,7 +63,8 @@ var defaultMappings = {
   'AcceptanceTests/Url': '../../../TestServer/swagger/url.json',
   'AcceptanceTests/Validation': '../../../TestServer/swagger/validation.json',
   'AcceptanceTests/CustomBaseUri': '../../../TestServer/swagger/custom-baseUrl.json',
-  'AcceptanceTests/ModelFlattening': '../../../TestServer/swagger/model-flattening.json',
+  'AcceptanceTests/CustomBaseUriMoreOptions': '../../../TestServer/swagger/custom-baseUrl-more-options.json',
+  'AcceptanceTests/ModelFlattening': '../../../TestServer/swagger/model-flattening.json'
 };
 
 var rubyMappings = {
@@ -411,13 +412,23 @@ gulp.task('regenerate:expected:samples:azure', function(){
   }
 });
 
+var msBuildToolsVersion = 12.0;
+if (isWindows) {
+    fs.readdirSync('C:/Program Files (x86)/MSBuild/').forEach(function (item) {
+        var itemAsFloat = parseFloat(item);
+        if (itemAsFloat > msBuildToolsVersion) {
+            msBuildToolsVersion = itemAsFloat;
+        }
+    });
+}
+
 var msbuildDefaults = {
   stdout: process.stdout,
   stderr: process.stderr,
   maxBuffer: MAX_BUFFER,
   verbosity: 'minimal',
   errorOnFail: true,
-  toolsVersion: 12.0
+  toolsVersion: msBuildToolsVersion
 };
 
 gulp.task('clean:node_modules', function(cb) {
@@ -679,9 +690,10 @@ gulp.task('analysis', function(cb) {
 });
 
 gulp.task('default', function(cb){
-  // analysis runs rebuild under the covers, so this cause build to be run in debug
-  // the build release causes release bits to be built, so we can package release dlls
-  // test then runs in debug, but uses the packages created in package
+  // Notes: 
+  //   Analysis runs rebuild under the covers, so this causes build to be run in DEBUG
+  //   The build RELEASE causes release bits to be built, so we can package RELEASE dlls
+  //   Test then runs in DEBUG, but uses the packages created in package
   if (isWindows) {
     runSequence('clean', 'build', 'analysis', 'build:release', 'package', 'test', cb);
   } else {

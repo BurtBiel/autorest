@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Net;
+using System.Text.RegularExpressions;
 using Microsoft.Rest.Generator.ClientModel;
 using Microsoft.Rest.Generator.Python.TemplateModels;
 using Microsoft.Rest.Generator.Utilities;
@@ -31,6 +32,19 @@ namespace Microsoft.Rest.Generator.Python
                 OperationName = serviceClient.Name;
             }
             AddCustomHeader = true;
+            string formatter;
+            foreach (var parameter in LocalParameters)
+            {
+                if (string.IsNullOrWhiteSpace(parameter.DefaultValue))
+                {
+                    parameter.DefaultValue = PythonConstants.None;
+                }
+            }
+            foreach (Match m in Regex.Matches(Url, @"\{[\w]+:[\w]+\}"))
+            {
+                formatter = m.Value.Split(':').First() + '}';
+                Url = Url.Replace(m.Value, formatter);
+            }
         }
 
         public bool AddCustomHeader { get; private set; }
@@ -151,7 +165,7 @@ namespace Microsoft.Rest.Generator.Python
 
             foreach (var parameter in LocalParameters)
             {
-                if (parameter.IsRequired && parameter.DefaultValue.Equals(PythonConstants.None))
+                if (parameter.IsRequired && parameter.DefaultValue == PythonConstants.None)
                 {
                     requiredDeclarations.Add(parameter.Name);
                 }
@@ -533,7 +547,7 @@ namespace Microsoft.Rest.Generator.Python
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1308:NormalizeStringsToUppercase")]
-        public static string GetDocumentationType(IType type)
+        public string GetDocumentationType(IType type)
         {
             if (type == null)
             {
@@ -543,6 +557,7 @@ namespace Microsoft.Rest.Generator.Python
             string result = "object";
 
             var primaryType = type as PrimaryType;
+            var listType = type as SequenceType;
             if (primaryType != null)
             {
                 if (primaryType.Type == KnownPrimaryType.Stream)
@@ -554,9 +569,9 @@ namespace Microsoft.Rest.Generator.Python
                     result = type.Name.ToLower(CultureInfo.InvariantCulture);
                 }
             }
-            else if (type is SequenceType)
+            else if (listType != null)
             {
-                result = "list";
+                result = string.Format(CultureInfo.InvariantCulture, "list of {0}", GetDocumentationType(listType.ElementType));
             }
             else if (type is EnumType)
             {
@@ -568,7 +583,10 @@ namespace Microsoft.Rest.Generator.Python
             }
             else if (type is CompositeType)
             {
-                result = type.Name;
+                var modelNamespace = ServiceClient.Name.ToPythonCase().Replace("_", "");
+                if (!ServiceClient.Namespace.IsNullOrEmpty())
+                    modelNamespace = ServiceClient.Namespace.ToPythonCase().Replace("_", "");
+                result = string.Format(CultureInfo.InvariantCulture, ":class:`{0} <{1}.models.{0}>`", type.Name, modelNamespace);
             }
 
             return result;
@@ -615,9 +633,11 @@ namespace Microsoft.Rest.Generator.Python
                 if (transformation.ParameterMappings.Any(m => !string.IsNullOrEmpty(m.OutputParameterProperty)) &&
                     transformation.OutputParameter.Type is CompositeType)
                 {
-                    List<string> combinedParams = new List<string>();
                     var comps = ServiceClient.ModelTypes.Where(x => x.Name == transformation.OutputParameter.Type.Name);
                     var composite = comps.First();
+
+                    List<string> combinedParams = new List<string>();
+                    List<string> paramCheck = new List<string>();
 
                     foreach (var mapping in transformation.ParameterMappings)
                     {
@@ -626,9 +646,15 @@ namespace Microsoft.Rest.Generator.Python
                         {
                             var param = mappedParams.First();
                             combinedParams.Add(string.Format(CultureInfo.InvariantCulture, "{0}={0}", param.Name));
+                            paramCheck.Add(string.Format(CultureInfo.InvariantCulture, "{0} is not None", param.Name));
                         }
                     }
 
+                    if (!transformation.OutputParameter.IsRequired)
+                    {
+                        builder.AppendLine("{0} = None", transformation.OutputParameter.Name);
+                        builder.AppendLine("if {0}:", string.Join(" or ", paramCheck)).Indent();
+                    }
                     builder.AppendLine("{0} = models.{1}({2})",
                         transformation.OutputParameter.Name,
                         transformation.OutputParameter.Type.Name,

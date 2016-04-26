@@ -183,10 +183,9 @@ namespace Fixtures.AcceptanceTestsBodyComplex
         /// </return>
         public async Task<HttpOperationResponse> PutValidWithHttpMessagesAsync(IList<string> array = default(IList<string>), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
-            ArrayWrapper complexBody = default(ArrayWrapper);
+            ArrayWrapper complexBody = new ArrayWrapper();
             if (array != null)
             {
-                complexBody = new ArrayWrapper();
                 complexBody.Array = array;
             }
             // Tracing
@@ -223,9 +222,12 @@ namespace Fixtures.AcceptanceTestsBodyComplex
 
             // Serialize Request
             string _requestContent = null;
-            _requestContent = SafeJsonConvert.SerializeObject(complexBody, this.Client.SerializationSettings);
-            _httpRequest.Content = new StringContent(_requestContent, Encoding.UTF8);
-            _httpRequest.Content.Headers.ContentType = MediaTypeHeaderValue.Parse("application/json; charset=utf-8");
+            if(complexBody != null)
+            {
+                _requestContent = SafeJsonConvert.SerializeObject(complexBody, this.Client.SerializationSettings);
+                _httpRequest.Content = new StringContent(_requestContent, Encoding.UTF8);
+                _httpRequest.Content.Headers.ContentType = MediaTypeHeaderValue.Parse("application/json; charset=utf-8");
+            }
             // Send Request
             if (_shouldTrace)
             {
@@ -415,10 +417,9 @@ namespace Fixtures.AcceptanceTestsBodyComplex
         /// </return>
         public async Task<HttpOperationResponse> PutEmptyWithHttpMessagesAsync(IList<string> array = default(IList<string>), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
-            ArrayWrapper complexBody = default(ArrayWrapper);
+            ArrayWrapper complexBody = new ArrayWrapper();
             if (array != null)
             {
-                complexBody = new ArrayWrapper();
                 complexBody.Array = array;
             }
             // Tracing
@@ -455,9 +456,12 @@ namespace Fixtures.AcceptanceTestsBodyComplex
 
             // Serialize Request
             string _requestContent = null;
-            _requestContent = SafeJsonConvert.SerializeObject(complexBody, this.Client.SerializationSettings);
-            _httpRequest.Content = new StringContent(_requestContent, Encoding.UTF8);
-            _httpRequest.Content.Headers.ContentType = MediaTypeHeaderValue.Parse("application/json; charset=utf-8");
+            if(complexBody != null)
+            {
+                _requestContent = SafeJsonConvert.SerializeObject(complexBody, this.Client.SerializationSettings);
+                _httpRequest.Content = new StringContent(_requestContent, Encoding.UTF8);
+                _httpRequest.Content.Headers.ContentType = MediaTypeHeaderValue.Parse("application/json; charset=utf-8");
+            }
             // Send Request
             if (_shouldTrace)
             {

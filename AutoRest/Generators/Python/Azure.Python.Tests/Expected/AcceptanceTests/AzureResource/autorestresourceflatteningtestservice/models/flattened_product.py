@@ -15,15 +15,32 @@ from .resource import Resource
 class FlattenedProduct(Resource):
     """FlattenedProduct
 
-    :param str id: Resource Id
-    :param str type: Resource Type
-    :param dict tags:
-    :param str location: Resource Location
-    :param str name: Resource Name
-    :param str pname:
-    :param int lsize:
-    :param str provisioning_state:
+    Variables are only populated by the server, and will be ignored when
+    sending a request.
+
+    :ivar id: Resource Id
+    :vartype id: str
+    :ivar type: Resource Type
+    :vartype type: str
+    :param tags:
+    :type tags: dict
+    :param location: Resource Location
+    :type location: str
+    :ivar name: Resource Name
+    :vartype name: str
+    :param pname:
+    :type pname: str
+    :param lsize:
+    :type lsize: int
+    :param provisioning_state:
+    :type provisioning_state: str
     """ 
+
+    _validation = {
+        'id': {'readonly': True},
+        'type': {'readonly': True},
+        'name': {'readonly': True},
+    }
 
     _attribute_map = {
         'id': {'key': 'id', 'type': 'str'},
@@ -36,8 +53,8 @@ class FlattenedProduct(Resource):
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
     }
 
-    def __init__(self, id=None, type=None, tags=None, location=None, name=None, pname=None, lsize=None, provisioning_state=None, **kwargs):
-        super(FlattenedProduct, self).__init__(id=id, type=type, tags=tags, location=location, name=name, **kwargs)
+    def __init__(self, tags=None, location=None, pname=None, lsize=None, provisioning_state=None):
+        super(FlattenedProduct, self).__init__(tags=tags, location=location)
         self.pname = pname
         self.lsize = lsize
         self.provisioning_state = provisioning_state

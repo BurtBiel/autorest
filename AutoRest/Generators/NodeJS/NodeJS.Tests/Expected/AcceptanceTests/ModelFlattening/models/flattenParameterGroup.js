@@ -17,13 +17,15 @@
  * Additional parameters for the putSimpleProductWithGrouping operation.
  * @member {string} name Product name with value 'groupproduct'
  * 
- * @member {string} baseProductId Unique identifier representing a specific
+ * @member {string} productId Unique identifier representing a specific
  * product for a given latitude & longitude. For example, uberX in San
  * Francisco will have a different product_id than uberX in Los Angeles.
  * 
- * @member {string} [baseProductDescription] Description of product.
+ * @member {string} [description] Description of product.
  * 
  * @member {string} maxProductDisplayName Display name of product.
+ * 
+ * @member {string} [genericValue] Generic URL value.
  * 
  * @member {string} [odatavalue] URL value.
  * 
@@ -50,13 +52,13 @@ FlattenParameterGroup.prototype.mapper = function () {
             name: 'String'
           }
         },
-        baseProductId: {
+        productId: {
           required: true,
           type: {
             name: 'String'
           }
         },
-        baseProductDescription: {
+        description: {
           required: false,
           type: {
             name: 'String'
@@ -64,6 +66,12 @@ FlattenParameterGroup.prototype.mapper = function () {
         },
         maxProductDisplayName: {
           required: true,
+          type: {
+            name: 'String'
+          }
+        },
+        genericValue: {
+          required: false,
           type: {
             name: 'String'
           }

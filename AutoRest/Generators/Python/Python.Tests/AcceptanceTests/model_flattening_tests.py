@@ -219,10 +219,11 @@ class ModelFlatteningTests(unittest.TestCase):
     def test_model_flattening_simple(self):
 
         simple_prduct = SimpleProduct(
-            base_product_id = "123",
-            base_product_description = "product description",
+            product_id = "123",
+            description = "product description",
             max_product_display_name = "max name",
-            odatavalue = "http://foo"
+            odatavalue = "http://foo",
+            generic_value = "https://generic"
             )
 
         result = self.client.put_simple_product(simple_prduct)
@@ -231,27 +232,27 @@ class ModelFlatteningTests(unittest.TestCase):
     def test_model_flattening_with_parameter_flattening(self):
 
         simple_product = SimpleProduct(
-            base_product_id = "123",
-            base_product_description = "product description",
+            product_id = "123",
+            description = "product description",
             max_product_display_name = "max name",
             odatavalue = "http://foo"
             )
 
-        result = self.client.post_flattened_simple_product("123", "max name", "product description", "http://foo")
+        result = self.client.post_flattened_simple_product("123", "max name", "product description", None, "http://foo")
         self.assertEqual(result, simple_product)
 
     def test_model_flattening_with_grouping(self):
 
         simple_prduct = SimpleProduct(
-            base_product_id = "123",
-            base_product_description = "product description",
+            product_id = "123",
+            description = "product description",
             max_product_display_name = "max name",
             odatavalue = "http://foo"
             )
 
         group = FlattenParameterGroup(
-            base_product_id="123",
-            base_product_description="product description",
+            product_id = "123",
+            description = "product description",
             max_product_display_name="max name",
             odatavalue="http://foo",
             name="groupproduct")

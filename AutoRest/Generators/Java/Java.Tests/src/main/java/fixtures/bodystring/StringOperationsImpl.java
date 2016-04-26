@@ -89,6 +89,22 @@ public final class StringOperationsImpl implements StringOperations {
         @GET("string/notProvided")
         Call<ResponseBody> getNotProvided();
 
+        @Headers("Content-Type: application/json; charset=utf-8")
+        @GET("string/base64Encoding")
+        Call<ResponseBody> getBase64Encoded();
+
+        @Headers("Content-Type: application/json; charset=utf-8")
+        @GET("string/base64UrlEncoding")
+        Call<ResponseBody> getBase64UrlEncoded();
+
+        @Headers("Content-Type: application/json; charset=utf-8")
+        @PUT("string/base64UrlEncoding")
+        Call<ResponseBody> putBase64UrlEncoded(@Body String stringBody);
+
+        @Headers("Content-Type: application/json; charset=utf-8")
+        @GET("string/nullBase64UrlEncoding")
+        Call<ResponseBody> getNullBase64UrlEncoded();
+
     }
 
     /**
@@ -139,7 +155,47 @@ public final class StringOperationsImpl implements StringOperations {
     /**
      * Set string value null.
      *
-     * @param stringBody the String value
+     * @throws ErrorException exception thrown from REST call
+     * @throws IOException exception thrown from serialization/deserialization
+     * @return the {@link ServiceResponse} object if successful.
+     */
+    public ServiceResponse<Void> putNull() throws ErrorException, IOException {
+        final String stringBody = null;
+        Call<ResponseBody> call = service.putNull(stringBody);
+        return putNullDelegate(call.execute());
+    }
+
+    /**
+     * Set string value null.
+     *
+     * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
+     * @throws IllegalArgumentException thrown if callback is null
+     * @return the {@link Call} object
+     */
+    public ServiceCall putNullAsync(final ServiceCallback<Void> serviceCallback) throws IllegalArgumentException {
+        if (serviceCallback == null) {
+            throw new IllegalArgumentException("ServiceCallback is required for async calls.");
+        }
+        final String stringBody = null;
+        Call<ResponseBody> call = service.putNull(stringBody);
+        final ServiceCall serviceCall = new ServiceCall(call);
+        call.enqueue(new ServiceResponseCallback<Void>(serviceCallback) {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                try {
+                    serviceCallback.success(putNullDelegate(response));
+                } catch (ErrorException | IOException exception) {
+                    serviceCallback.failure(exception);
+                }
+            }
+        });
+        return serviceCall;
+    }
+
+    /**
+     * Set string value null.
+     *
+     * @param stringBody Possible values include: ''
      * @throws ErrorException exception thrown from REST call
      * @throws IOException exception thrown from serialization/deserialization
      * @return the {@link ServiceResponse} object if successful.
@@ -152,7 +208,7 @@ public final class StringOperationsImpl implements StringOperations {
     /**
      * Set string value null.
      *
-     * @param stringBody the String value
+     * @param stringBody Possible values include: ''
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if callback is null
      * @return the {@link Call} object
@@ -231,7 +287,7 @@ public final class StringOperationsImpl implements StringOperations {
     /**
      * Set string value empty ''.
      *
-     * @param stringBody the String value
+     * @param stringBody Possible values include: ''
      * @throws ErrorException exception thrown from REST call
      * @throws IOException exception thrown from serialization/deserialization
      * @throws IllegalArgumentException exception thrown from invalid parameters
@@ -248,7 +304,7 @@ public final class StringOperationsImpl implements StringOperations {
     /**
      * Set string value empty ''.
      *
-     * @param stringBody the String value
+     * @param stringBody Possible values include: ''
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if callback is null
      * @return the {@link Call} object
@@ -331,7 +387,7 @@ public final class StringOperationsImpl implements StringOperations {
     /**
      * Set string value mbcs '啊齄丂狛狜隣郎隣兀﨩ˊ▇█〞〡￤℡㈱‐ー﹡﹢﹫、〓ⅰⅹ⒈€㈠㈩ⅠⅫ！￣ぁんァヶΑ︴АЯаяāɡㄅㄩ─╋︵﹄︻︱︳︴ⅰⅹɑɡ〇〾⿻⺁䜣€ '.
      *
-     * @param stringBody the String value
+     * @param stringBody Possible values include: '啊齄丂狛狜隣郎隣兀﨩ˊ▇█〞〡￤℡㈱‐ー﹡﹢﹫、〓ⅰⅹ⒈€㈠㈩ⅠⅫ！￣ぁんァヶΑ︴АЯаяāɡㄅㄩ─╋︵﹄︻︱︳︴ⅰⅹɑɡ〇〾⿻⺁䜣€ '
      * @throws ErrorException exception thrown from REST call
      * @throws IOException exception thrown from serialization/deserialization
      * @throws IllegalArgumentException exception thrown from invalid parameters
@@ -348,7 +404,7 @@ public final class StringOperationsImpl implements StringOperations {
     /**
      * Set string value mbcs '啊齄丂狛狜隣郎隣兀﨩ˊ▇█〞〡￤℡㈱‐ー﹡﹢﹫、〓ⅰⅹ⒈€㈠㈩ⅠⅫ！￣ぁんァヶΑ︴АЯаяāɡㄅㄩ─╋︵﹄︻︱︳︴ⅰⅹɑɡ〇〾⿻⺁䜣€ '.
      *
-     * @param stringBody the String value
+     * @param stringBody Possible values include: '啊齄丂狛狜隣郎隣兀﨩ˊ▇█〞〡￤℡㈱‐ー﹡﹢﹫、〓ⅰⅹ⒈€㈠㈩ⅠⅫ！￣ぁんァヶΑ︴АЯаяāɡㄅㄩ─╋︵﹄︻︱︳︴ⅰⅹɑɡ〇〾⿻⺁䜣€ '
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if callback is null
      * @return the {@link Call} object
@@ -431,7 +487,7 @@ public final class StringOperationsImpl implements StringOperations {
     /**
      * Set String value with leading and trailing whitespace '&lt;tab&gt;&lt;space&gt;&lt;space&gt;Now is the time for all good men to come to the aid of their country&lt;tab&gt;&lt;space&gt;&lt;space&gt;'.
      *
-     * @param stringBody the String value
+     * @param stringBody Possible values include: '    Now is the time for all good men to come to the aid of their country    '
      * @throws ErrorException exception thrown from REST call
      * @throws IOException exception thrown from serialization/deserialization
      * @throws IllegalArgumentException exception thrown from invalid parameters
@@ -448,7 +504,7 @@ public final class StringOperationsImpl implements StringOperations {
     /**
      * Set String value with leading and trailing whitespace '&lt;tab&gt;&lt;space&gt;&lt;space&gt;Now is the time for all good men to come to the aid of their country&lt;tab&gt;&lt;space&gt;&lt;space&gt;'.
      *
-     * @param stringBody the String value
+     * @param stringBody Possible values include: '    Now is the time for all good men to come to the aid of their country    '
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if callback is null
      * @return the {@link Call} object
@@ -522,6 +578,196 @@ public final class StringOperationsImpl implements StringOperations {
     }
 
     private ServiceResponse<String> getNotProvidedDelegate(Response<ResponseBody> response) throws ErrorException, IOException {
+        return new ServiceResponseBuilder<String, ErrorException>(this.client.getMapperAdapter())
+                .register(200, new TypeToken<String>() { }.getType())
+                .registerError(ErrorException.class)
+                .build(response);
+    }
+
+    /**
+     * Get value that is base64 encoded.
+     *
+     * @throws ErrorException exception thrown from REST call
+     * @throws IOException exception thrown from serialization/deserialization
+     * @return the String object wrapped in {@link ServiceResponse} if successful.
+     */
+    public ServiceResponse<String> getBase64Encoded() throws ErrorException, IOException {
+        Call<ResponseBody> call = service.getBase64Encoded();
+        return getBase64EncodedDelegate(call.execute());
+    }
+
+    /**
+     * Get value that is base64 encoded.
+     *
+     * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
+     * @throws IllegalArgumentException thrown if callback is null
+     * @return the {@link Call} object
+     */
+    public ServiceCall getBase64EncodedAsync(final ServiceCallback<String> serviceCallback) throws IllegalArgumentException {
+        if (serviceCallback == null) {
+            throw new IllegalArgumentException("ServiceCallback is required for async calls.");
+        }
+        Call<ResponseBody> call = service.getBase64Encoded();
+        final ServiceCall serviceCall = new ServiceCall(call);
+        call.enqueue(new ServiceResponseCallback<String>(serviceCallback) {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                try {
+                    serviceCallback.success(getBase64EncodedDelegate(response));
+                } catch (ErrorException | IOException exception) {
+                    serviceCallback.failure(exception);
+                }
+            }
+        });
+        return serviceCall;
+    }
+
+    private ServiceResponse<String> getBase64EncodedDelegate(Response<ResponseBody> response) throws ErrorException, IOException {
+        return new ServiceResponseBuilder<String, ErrorException>(this.client.getMapperAdapter())
+                .register(200, new TypeToken<String>() { }.getType())
+                .registerError(ErrorException.class)
+                .build(response);
+    }
+
+    /**
+     * Get value that is base64url encoded.
+     *
+     * @throws ErrorException exception thrown from REST call
+     * @throws IOException exception thrown from serialization/deserialization
+     * @return the String object wrapped in {@link ServiceResponse} if successful.
+     */
+    public ServiceResponse<String> getBase64UrlEncoded() throws ErrorException, IOException {
+        Call<ResponseBody> call = service.getBase64UrlEncoded();
+        return getBase64UrlEncodedDelegate(call.execute());
+    }
+
+    /**
+     * Get value that is base64url encoded.
+     *
+     * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
+     * @throws IllegalArgumentException thrown if callback is null
+     * @return the {@link Call} object
+     */
+    public ServiceCall getBase64UrlEncodedAsync(final ServiceCallback<String> serviceCallback) throws IllegalArgumentException {
+        if (serviceCallback == null) {
+            throw new IllegalArgumentException("ServiceCallback is required for async calls.");
+        }
+        Call<ResponseBody> call = service.getBase64UrlEncoded();
+        final ServiceCall serviceCall = new ServiceCall(call);
+        call.enqueue(new ServiceResponseCallback<String>(serviceCallback) {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                try {
+                    serviceCallback.success(getBase64UrlEncodedDelegate(response));
+                } catch (ErrorException | IOException exception) {
+                    serviceCallback.failure(exception);
+                }
+            }
+        });
+        return serviceCall;
+    }
+
+    private ServiceResponse<String> getBase64UrlEncodedDelegate(Response<ResponseBody> response) throws ErrorException, IOException {
+        return new ServiceResponseBuilder<String, ErrorException>(this.client.getMapperAdapter())
+                .register(200, new TypeToken<String>() { }.getType())
+                .registerError(ErrorException.class)
+                .build(response);
+    }
+
+    /**
+     * Put value that is base64url encoded.
+     *
+     * @param stringBody the String value
+     * @throws ErrorException exception thrown from REST call
+     * @throws IOException exception thrown from serialization/deserialization
+     * @throws IllegalArgumentException exception thrown from invalid parameters
+     * @return the {@link ServiceResponse} object if successful.
+     */
+    public ServiceResponse<Void> putBase64UrlEncoded(String stringBody) throws ErrorException, IOException, IllegalArgumentException {
+        if (stringBody == null) {
+            throw new IllegalArgumentException("Parameter stringBody is required and cannot be null.");
+        }
+        Call<ResponseBody> call = service.putBase64UrlEncoded(stringBody);
+        return putBase64UrlEncodedDelegate(call.execute());
+    }
+
+    /**
+     * Put value that is base64url encoded.
+     *
+     * @param stringBody the String value
+     * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
+     * @throws IllegalArgumentException thrown if callback is null
+     * @return the {@link Call} object
+     */
+    public ServiceCall putBase64UrlEncodedAsync(String stringBody, final ServiceCallback<Void> serviceCallback) throws IllegalArgumentException {
+        if (serviceCallback == null) {
+            throw new IllegalArgumentException("ServiceCallback is required for async calls.");
+        }
+        if (stringBody == null) {
+            serviceCallback.failure(new IllegalArgumentException("Parameter stringBody is required and cannot be null."));
+            return null;
+        }
+        Call<ResponseBody> call = service.putBase64UrlEncoded(stringBody);
+        final ServiceCall serviceCall = new ServiceCall(call);
+        call.enqueue(new ServiceResponseCallback<Void>(serviceCallback) {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                try {
+                    serviceCallback.success(putBase64UrlEncodedDelegate(response));
+                } catch (ErrorException | IOException exception) {
+                    serviceCallback.failure(exception);
+                }
+            }
+        });
+        return serviceCall;
+    }
+
+    private ServiceResponse<Void> putBase64UrlEncodedDelegate(Response<ResponseBody> response) throws ErrorException, IOException, IllegalArgumentException {
+        return new ServiceResponseBuilder<Void, ErrorException>(this.client.getMapperAdapter())
+                .register(200, new TypeToken<Void>() { }.getType())
+                .registerError(ErrorException.class)
+                .build(response);
+    }
+
+    /**
+     * Get null value that is expected to be base64url encoded.
+     *
+     * @throws ErrorException exception thrown from REST call
+     * @throws IOException exception thrown from serialization/deserialization
+     * @return the String object wrapped in {@link ServiceResponse} if successful.
+     */
+    public ServiceResponse<String> getNullBase64UrlEncoded() throws ErrorException, IOException {
+        Call<ResponseBody> call = service.getNullBase64UrlEncoded();
+        return getNullBase64UrlEncodedDelegate(call.execute());
+    }
+
+    /**
+     * Get null value that is expected to be base64url encoded.
+     *
+     * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
+     * @throws IllegalArgumentException thrown if callback is null
+     * @return the {@link Call} object
+     */
+    public ServiceCall getNullBase64UrlEncodedAsync(final ServiceCallback<String> serviceCallback) throws IllegalArgumentException {
+        if (serviceCallback == null) {
+            throw new IllegalArgumentException("ServiceCallback is required for async calls.");
+        }
+        Call<ResponseBody> call = service.getNullBase64UrlEncoded();
+        final ServiceCall serviceCall = new ServiceCall(call);
+        call.enqueue(new ServiceResponseCallback<String>(serviceCallback) {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                try {
+                    serviceCallback.success(getNullBase64UrlEncodedDelegate(response));
+                } catch (ErrorException | IOException exception) {
+                    serviceCallback.failure(exception);
+                }
+            }
+        });
+        return serviceCall;
+    }
+
+    private ServiceResponse<String> getNullBase64UrlEncodedDelegate(Response<ResponseBody> response) throws ErrorException, IOException {
         return new ServiceResponseBuilder<String, ErrorException>(this.client.getMapperAdapter())
                 .register(200, new TypeToken<String>() { }.getType())
                 .registerError(ErrorException.class)

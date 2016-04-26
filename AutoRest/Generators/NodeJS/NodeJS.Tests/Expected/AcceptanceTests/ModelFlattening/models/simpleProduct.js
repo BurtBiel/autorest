@@ -21,6 +21,8 @@ var util = require('util');
  * The product documentation.
  * @member {string} maxProductDisplayName Display name of product.
  * 
+ * @member {string} [genericValue] Generic URL value.
+ * 
  * @member {string} [odatavalue] URL value.
  * 
  */
@@ -45,14 +47,14 @@ SimpleProduct.prototype.mapper = function () {
       name: 'Composite',
       className: 'SimpleProduct',
       modelProperties: {
-        baseProductId: {
+        productId: {
           required: true,
           serializedName: 'base_product_id',
           type: {
             name: 'String'
           }
         },
-        baseProductDescription: {
+        description: {
           required: false,
           serializedName: 'base_product_description',
           type: {
@@ -66,11 +68,18 @@ SimpleProduct.prototype.mapper = function () {
             name: 'String'
           }
         },
-        maxProductCapacity: {
+        capacity: {
           required: true,
           isConstant: true,
           serializedName: 'details.max_product_capacity',
           defaultValue: 'Large',
+          type: {
+            name: 'String'
+          }
+        },
+        genericValue: {
+          required: false,
+          serializedName: 'details.max_product_image.generic_value',
           type: {
             name: 'String'
           }

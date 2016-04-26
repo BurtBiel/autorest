@@ -7,6 +7,7 @@ using System.Globalization;
 using System.Linq;
 using Microsoft.Rest.Generator.ClientModel;
 using Microsoft.Rest.Generator.Utilities;
+using Microsoft.Rest.Generator.Ruby.TemplateModels;
 
 namespace Microsoft.Rest.Generator.Ruby
 {
@@ -163,6 +164,62 @@ namespace Microsoft.Rest.Generator.Ruby
                 }
             }
         }
+
+        /// <summary>
+        /// Normalizes the parameter names of a method
+        /// </summary>
+        /// <param name="method"></param>
+        protected override void NormalizeParameters(Method method)
+        {
+            if (method != null)
+            {
+                foreach (var parameter in method.Parameters)
+                {
+                    parameter.Name = method.Scope.GetUniqueName(GetParameterName(parameter.GetClientName()));
+                    parameter.Type = NormalizeTypeReference(parameter.Type);
+                    QuoteParameter(parameter);
+                }
+
+                foreach (var parameterTransformation in method.InputParameterTransformation)
+                {
+                    parameterTransformation.OutputParameter.Name = method.Scope.GetUniqueName(GetParameterName(parameterTransformation.OutputParameter.GetClientName()));
+                    parameterTransformation.OutputParameter.Type = NormalizeTypeReference(parameterTransformation.OutputParameter.Type);
+
+                    QuoteParameter(parameterTransformation.OutputParameter);
+
+                    foreach (var parameterMapping in parameterTransformation.ParameterMappings)
+                    {
+                        if (parameterMapping.InputParameterProperty != null)
+                        {
+                            parameterMapping.InputParameterProperty = GetPropertyName(parameterMapping.InputParameterProperty);
+                        }
+
+                        if (parameterMapping.OutputParameterProperty != null)
+                        {
+                            parameterMapping.OutputParameterProperty = GetPropertyName(parameterMapping.OutputParameterProperty);
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Normalizes the client properties names of a client model
+        /// </summary>
+        /// <param name="client">A client model</param>
+        protected override void NormalizeClientProperties(ServiceClient client)
+        {
+            if (client != null)
+            {
+                foreach (var property in client.Properties)
+                {
+                    property.Name = GetPropertyName(property.GetClientName());
+                    property.Type = NormalizeTypeReference(property.Type);
+                    QuoteParameter(property);
+                }
+            }
+        }
+
         public override IType NormalizeTypeDeclaration(IType type)
         {
             return NormalizeTypeReference(type);
@@ -225,7 +282,7 @@ namespace Microsoft.Rest.Generator.Ruby
 
             foreach (var property in compositeType.Properties)
             {
-                property.Name = GetPropertyName(property.Name);
+                property.Name = GetPropertyName(property.GetClientName());
                 if (property.SerializedName != null)
                 {
                     property.SerializedName = property.SerializedName.Replace("\\", "\\\\");
@@ -266,7 +323,11 @@ namespace Microsoft.Rest.Generator.Ruby
                 throw new ArgumentNullException("primaryType");
             }
 
-            if (primaryType.Type == KnownPrimaryType.Boolean)
+            if (primaryType.Type == KnownPrimaryType.Base64Url)
+            {
+                primaryType.Name = "String";
+            }
+            else if (primaryType.Type == KnownPrimaryType.Boolean)
             {
                 primaryType.Name = "Boolean";
             }
@@ -310,6 +371,10 @@ namespace Microsoft.Rest.Generator.Ruby
             else if (primaryType.Type == KnownPrimaryType.TimeSpan)
             {
                 primaryType.Name = "Duration";
+            }
+            else if (primaryType.Type == KnownPrimaryType.UnixTime)
+            {
+                primaryType.Name = "Bignum";
             }
             else if (primaryType.Type == KnownPrimaryType.Object)
             {
@@ -373,7 +438,7 @@ namespace Microsoft.Rest.Generator.Ruby
 
                     if (primaryType.Type == KnownPrimaryType.ByteArray)
                     {
-                        return "'" + defaultValue + "'.bytes.to_a";
+                        return "'" + defaultValue + "'.bytes.pack('C*')";
                     }
                 }
             }

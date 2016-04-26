@@ -15,12 +15,13 @@ from msrest.serialization import Model
 class SubResource(Model):
     """SubResource
 
-    :param str id: Resource Id
+    :param id: Resource Id
+    :type id: str
     """ 
 
     _attribute_map = {
         'id': {'key': 'id', 'type': 'str'},
     }
 
-    def __init__(self, id=None, **kwargs):
+    def __init__(self, id=None):
         self.id = id

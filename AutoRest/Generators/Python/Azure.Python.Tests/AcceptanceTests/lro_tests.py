@@ -66,6 +66,7 @@ class LroTests(unittest.TestCase):
         self.client = AutoRestLongRunningOperationTestService(config)
 
         self.client.config.long_running_operation_timeout = 0
+        self.client._client._adapter.add_hook("request", self.client._client._adapter._test_pipeline)
         return super(LroTests, self).setUp()
 
     def assertRaisesWithMessage(self, msg, func, *args, **kwargs):
@@ -101,16 +102,16 @@ class LroTests(unittest.TestCase):
 
         # Testing raw
         process = self.client.lr_os.put201_creating_succeeded200(product, raw=True)
-        self.assertEqual("Succeeded", process.result().output.provisioning_state)
+        self.assertEqual("Creating", process.output.provisioning_state)
 
-        self.assertRaisesWithMessage("Long running operation failed",
-            self.client.lr_os.put201_creating_failed200(product, raw=True).result)
+        process = self.client.lr_os.put201_creating_failed200(product, raw=True)
+        self.assertEqual("Created", process.output.provisioning_state)
 
         process = self.client.lr_os.put200_updating_succeeded204(product, raw=True)
-        self.assertEqual("Succeeded", process.result().output.provisioning_state)
+        self.assertEqual("Updating", process.output.provisioning_state)
 
-        self.assertRaisesWithMessage("Long running operation failed",
-            self.client.lr_os.put200_acceptedcanceled200(product, raw=True).result)
+        process = self.client.lr_os.put200_acceptedcanceled200(product, raw=True)
+        self.assertEqual("Accepted", process.output.provisioning_state)
 
         process = self.client.lr_os.put_no_header_in_retry(product)
         self.assertEqual("Succeeded", process.result().provisioning_state)

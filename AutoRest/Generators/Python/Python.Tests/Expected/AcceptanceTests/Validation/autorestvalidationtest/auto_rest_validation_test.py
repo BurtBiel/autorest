@@ -34,9 +34,13 @@ class AutoRestValidationTestConfiguration(Configuration):
             self, subscription_id, api_version, base_url=None, filepath=None):
 
         if subscription_id is None:
-            raise ValueError('subscription_id must not be None.')
+            raise ValueError("Parameter 'subscription_id' must not be None.")
+        if not isinstance(subscription_id, str):
+            raise TypeError("Parameter 'subscription_id' must be str.")
         if api_version is None:
-            raise ValueError('api_version must not be None.')
+            raise ValueError("Parameter 'api_version' must not be None.")
+        if not isinstance(api_version, str):
+            raise TypeError("Parameter 'api_version' must be str.")
         if not base_url:
             base_url = 'http://localhost'
 
@@ -76,10 +80,14 @@ class AutoRestValidationTest(object):
         :param id: Required int multiple of 10 from 100 to 1000.
         :type id: int
         :param dict custom_headers: headers that will be added to the request
-        :param boolean raw: returns the direct response alongside the
+        :param bool raw: returns the direct response alongside the
          deserialized response
-        :rtype: Product
-        :rtype: msrest.pipeline.ClientRawResponse if raw=True
+        :param operation_config: :ref:`Operation configuration
+         overrides<msrest:optionsforoperations>`.
+        :rtype: :class:`Product
+         <fixtures.acceptancetestsvalidation.models.Product>`
+        :rtype: :class:`ClientRawResponse<msrest.pipeline.ClientRawResponse>`
+         if raw=true
         """
         # Construct URL
         url = '/fakepath/{subscriptionId}/{resourceGroupName}/{id}'
@@ -129,12 +137,17 @@ class AutoRestValidationTest(object):
         :param id: Required int multiple of 10 from 100 to 1000.
         :type id: int
         :param body:
-        :type body: Product
+        :type body: :class:`Product
+         <fixtures.acceptancetestsvalidation.models.Product>`
         :param dict custom_headers: headers that will be added to the request
-        :param boolean raw: returns the direct response alongside the
+        :param bool raw: returns the direct response alongside the
          deserialized response
-        :rtype: Product
-        :rtype: msrest.pipeline.ClientRawResponse if raw=True
+        :param operation_config: :ref:`Operation configuration
+         overrides<msrest:optionsforoperations>`.
+        :rtype: :class:`Product
+         <fixtures.acceptancetestsvalidation.models.Product>`
+        :rtype: :class:`ClientRawResponse<msrest.pipeline.ClientRawResponse>`
+         if raw=true
         """
         # Construct URL
         url = '/fakepath/{subscriptionId}/{resourceGroupName}/{id}'
@@ -187,10 +200,13 @@ class AutoRestValidationTest(object):
         :param constant_param:
         :type constant_param: str
         :param dict custom_headers: headers that will be added to the request
-        :param boolean raw: returns the direct response alongside the
+        :param bool raw: returns the direct response alongside the
          deserialized response
+        :param operation_config: :ref:`Operation configuration
+         overrides<msrest:optionsforoperations>`.
         :rtype: None
-        :rtype: msrest.pipeline.ClientRawResponse if raw=True
+        :rtype: :class:`ClientRawResponse<msrest.pipeline.ClientRawResponse>`
+         if raw=true
         """
         # Construct URL
         url = '/validation/constantsInPath/{constantParam}/value'
@@ -226,12 +242,17 @@ class AutoRestValidationTest(object):
         :param constant_param:
         :type constant_param: str
         :param body:
-        :type body: Product
+        :type body: :class:`Product
+         <fixtures.acceptancetestsvalidation.models.Product>`
         :param dict custom_headers: headers that will be added to the request
-        :param boolean raw: returns the direct response alongside the
+        :param bool raw: returns the direct response alongside the
          deserialized response
-        :rtype: Product
-        :rtype: msrest.pipeline.ClientRawResponse if raw=True
+        :param operation_config: :ref:`Operation configuration
+         overrides<msrest:optionsforoperations>`.
+        :rtype: :class:`Product
+         <fixtures.acceptancetestsvalidation.models.Product>`
+        :rtype: :class:`ClientRawResponse<msrest.pipeline.ClientRawResponse>`
+         if raw=true
         """
         # Construct URL
         url = '/validation/constantsInPath/{constantParam}/value'

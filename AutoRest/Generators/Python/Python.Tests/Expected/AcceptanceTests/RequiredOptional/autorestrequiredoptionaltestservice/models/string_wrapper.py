@@ -15,7 +15,8 @@ from msrest.serialization import Model
 class StringWrapper(Model):
     """StringWrapper
 
-    :param str value:
+    :param value:
+    :type value: str
     """ 
 
     _validation = {
@@ -26,5 +27,5 @@ class StringWrapper(Model):
         'value': {'key': 'value', 'type': 'str'},
     }
 
-    def __init__(self, value, **kwargs):
+    def __init__(self, value):
         self.value = value

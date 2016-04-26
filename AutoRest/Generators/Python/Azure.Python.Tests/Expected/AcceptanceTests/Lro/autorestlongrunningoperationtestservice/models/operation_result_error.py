@@ -15,8 +15,10 @@ from msrest.serialization import Model
 class OperationResultError(Model):
     """OperationResultError
 
-    :param int code: The error code for an operation failure
-    :param str message: The detailed arror message
+    :param code: The error code for an operation failure
+    :type code: int
+    :param message: The detailed arror message
+    :type message: str
     """ 
 
     _attribute_map = {
@@ -24,6 +26,6 @@ class OperationResultError(Model):
         'message': {'key': 'message', 'type': 'str'},
     }
 
-    def __init__(self, code=None, message=None, **kwargs):
+    def __init__(self, code=None, message=None):
         self.code = code
         self.message = message

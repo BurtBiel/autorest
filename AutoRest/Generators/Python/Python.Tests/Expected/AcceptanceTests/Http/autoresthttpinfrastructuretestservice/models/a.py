@@ -16,14 +16,15 @@ from msrest.exceptions import HttpOperationError
 class A(Model):
     """A
 
-    :param str status_code:
+    :param status_code:
+    :type status_code: str
     """ 
 
     _attribute_map = {
         'status_code': {'key': 'statusCode', 'type': 'str'},
     }
 
-    def __init__(self, status_code=None, **kwargs):
+    def __init__(self, status_code=None):
         self.status_code = status_code
 
 

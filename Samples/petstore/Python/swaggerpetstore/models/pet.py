@@ -8,13 +8,19 @@ from msrest.serialization import Model
 class Pet(Model):
     """Pet
 
-    :param long id:
-    :param Category category:
-    :param str name:
-    :param list photo_urls:
-    :param list tags:
-    :param str status: pet status in the store. Possible values include:
+    :param id:
+    :type id: long
+    :param category:
+    :type category: :class:`Category <petstore.models.Category>`
+    :param name:
+    :type name: str
+    :param photo_urls:
+    :type photo_urls: list of str
+    :param tags:
+    :type tags: list of :class:`Tag <petstore.models.Tag>`
+    :param status: pet status in the store. Possible values include:
      'available', 'pending', 'sold'
+    :type status: str
     """ 
 
     _validation = {
@@ -31,7 +37,7 @@ class Pet(Model):
         'status': {'key': 'status', 'type': 'str'},
     }
 
-    def __init__(self, name, photo_urls, id=None, category=None, tags=None, status=None, **kwargs):
+    def __init__(self, name, photo_urls, id=None, category=None, tags=None, status=None):
         self.id = id
         self.category = category
         self.name = name

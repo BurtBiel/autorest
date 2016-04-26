@@ -15,9 +15,13 @@ from msrest.serialization import Model
 class DoubleWrapper(Model):
     """DoubleWrapper
 
-    :param float field1:
-    :param float
+    :param field1:
+    :type field1: float
+    :param
      field_56_zeros_after_the_dot_and_negative_zero_before_dot_and_this_is_a_long_field_name_on_purpose:
+    :type
+     field_56_zeros_after_the_dot_and_negative_zero_before_dot_and_this_is_a_long_field_name_on_purpose:
+     float
     """ 
 
     _attribute_map = {
@@ -25,6 +29,6 @@ class DoubleWrapper(Model):
         'field_56_zeros_after_the_dot_and_negative_zero_before_dot_and_this_is_a_long_field_name_on_purpose': {'key': 'field_56_zeros_after_the_dot_and_negative_zero_before_dot_and_this_is_a_long_field_name_on_purpose', 'type': 'float'},
     }
 
-    def __init__(self, field1=None, field_56_zeros_after_the_dot_and_negative_zero_before_dot_and_this_is_a_long_field_name_on_purpose=None, **kwargs):
+    def __init__(self, field1=None, field_56_zeros_after_the_dot_and_negative_zero_before_dot_and_this_is_a_long_field_name_on_purpose=None):
         self.field1 = field1
         self.field_56_zeros_after_the_dot_and_negative_zero_before_dot_and_this_is_a_long_field_name_on_purpose = field_56_zeros_after_the_dot_and_negative_zero_before_dot_and_this_is_a_long_field_name_on_purpose

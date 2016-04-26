@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net;
 using Microsoft.Rest.Generator.ClientModel;
 using Microsoft.Rest.Generator.Utilities;
+using System.Text.RegularExpressions;
 
 namespace Microsoft.Rest.Generator.CSharp
 {
@@ -324,23 +325,21 @@ namespace Microsoft.Rest.Generator.CSharp
         /// <returns></returns>
         public string GetSerializationSettingsReference(IType serializationType)
         {
-            SequenceType sequenceType = serializationType as SequenceType;
-            DictionaryType dictionaryType = serializationType as DictionaryType;
-            if (serializationType.IsPrimaryType(KnownPrimaryType.Date) ||
-                (sequenceType != null && sequenceType.ElementType is PrimaryType 
-                    && ((PrimaryType)sequenceType.ElementType).Type == KnownPrimaryType.Date) ||
-                (dictionaryType != null && dictionaryType.ValueType is PrimaryType 
-                    && ((PrimaryType)dictionaryType.ValueType).Type == KnownPrimaryType.Date))
+            if (serializationType.IsOrContainsPrimaryType(KnownPrimaryType.Date))
             {
                 return "new DateJsonConverter()";
             }
-            else if (serializationType.IsPrimaryType(KnownPrimaryType.DateTimeRfc1123) ||
-                (sequenceType != null && sequenceType.ElementType is PrimaryType
-                    && ((PrimaryType)sequenceType.ElementType).Type == KnownPrimaryType.DateTimeRfc1123) ||
-                (dictionaryType != null && dictionaryType.ValueType is PrimaryType
-                    && ((PrimaryType)dictionaryType.ValueType).Type == KnownPrimaryType.DateTimeRfc1123))
+            else if (serializationType.IsOrContainsPrimaryType(KnownPrimaryType.DateTimeRfc1123))
             {
                 return "new DateTimeRfc1123JsonConverter()";
+            }
+            else if (serializationType.IsOrContainsPrimaryType(KnownPrimaryType.Base64Url))
+            {
+                return "new Base64UrlJsonConverter()";
+            }
+            else if (serializationType.IsOrContainsPrimaryType(KnownPrimaryType.UnixTime))
+            {
+                return "new UnixTimeJsonConverter()";
             }
             return ClientReference + ".SerializationSettings";
         }
@@ -352,17 +351,18 @@ namespace Microsoft.Rest.Generator.CSharp
         /// <returns></returns>
         public string GetDeserializationSettingsReference(IType deserializationType)
         {
-            SequenceType sequenceType = deserializationType as SequenceType;
-            DictionaryType dictionaryType = deserializationType as DictionaryType;
-            if (deserializationType.IsPrimaryType(KnownPrimaryType.Date) ||
-                (sequenceType != null && sequenceType.ElementType is PrimaryType
-                    && ((PrimaryType)sequenceType.ElementType).Type == KnownPrimaryType.Date) ||
-                (dictionaryType != null && dictionaryType.ValueType is PrimaryType
-                    && ((PrimaryType)dictionaryType.ValueType).Type == KnownPrimaryType.Date))
+            if (deserializationType.IsOrContainsPrimaryType(KnownPrimaryType.Date))
             {
                 return "new DateJsonConverter()";
             }
-
+            else if (deserializationType.IsOrContainsPrimaryType(KnownPrimaryType.Base64Url))
+            {
+                return "new Base64UrlJsonConverter()";
+            }
+            else if (deserializationType.IsOrContainsPrimaryType(KnownPrimaryType.UnixTime))
+            {
+                return "new UnixTimeJsonConverter()";
+            }
             return ClientReference + ".DeserializationSettings";
         }
 
@@ -396,10 +396,28 @@ namespace Microsoft.Rest.Generator.CSharp
                     replaceString = "{0} = {0}.Replace(\"{{{1}}}\", {2});";
                 }
 
-                builder.AppendLine(replaceString,
+                var urlPathName = pathParameter.SerializedName;
+                string pat = @".*\{" + urlPathName + @"(\:\w+)\}";
+                Regex r = new Regex(pat);
+                Match m = r.Match(Url);
+                if (m.Success)
+                {
+                    urlPathName += m.Groups[1].Value;
+                }
+                if (pathParameter.Type is SequenceType)
+                {
+                    builder.AppendLine(replaceString,
                     variableName,
-                    pathParameter.SerializedName,
+                    urlPathName,
+                    pathParameter.GetFormattedReferenceValue(ClientReference));
+                }
+                else
+                {
+                    builder.AppendLine(replaceString,
+                    variableName,
+                    urlPathName,
                     pathParameter.Type.ToString(ClientReference, pathParameter.Name));
+                }  
             }
             if (this.LogicalParameterTemplateModels.Any(p => p.Location == ParameterLocation.Query))
             {
@@ -454,10 +472,19 @@ namespace Microsoft.Rest.Generator.CSharp
             var builder = new IndentedStringBuilder();
             foreach (var transformation in InputParameterTransformation)
             {
-                builder.AppendLine("{0} {1} = default({0});", 
+                var compositeOutputParameter = transformation.OutputParameter.Type as CompositeType;
+                if (transformation.OutputParameter.IsRequired && compositeOutputParameter != null)
+                {
+                    builder.AppendLine("{0} {1} = new {0}();",
                         transformation.OutputParameter.Type.Name,
                         transformation.OutputParameter.Name);
-
+                }
+                else
+                {
+                    builder.AppendLine("{0} {1} = default({0});",
+                        transformation.OutputParameter.Type.Name,
+                        transformation.OutputParameter.Name);
+                }
                 var nullCheck = BuildNullCheckExpression(transformation);
                 if (!string.IsNullOrEmpty(nullCheck))
                 {
@@ -466,7 +493,7 @@ namespace Microsoft.Rest.Generator.CSharp
                 }
                 
                 if (transformation.ParameterMappings.Any(m => !string.IsNullOrEmpty(m.OutputParameterProperty)) &&
-                    transformation.OutputParameter.Type is CompositeType)
+                    compositeOutputParameter != null && !transformation.OutputParameter.IsRequired)
                 {
                     builder.AppendLine("{0} = new {1}();",
                         transformation.OutputParameter.Name,

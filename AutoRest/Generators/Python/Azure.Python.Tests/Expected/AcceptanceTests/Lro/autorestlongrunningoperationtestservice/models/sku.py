@@ -15,8 +15,10 @@ from msrest.serialization import Model
 class Sku(Model):
     """Sku
 
-    :param str name:
-    :param str id:
+    :param name:
+    :type name: str
+    :param id:
+    :type id: str
     """ 
 
     _attribute_map = {
@@ -24,6 +26,6 @@ class Sku(Model):
         'id': {'key': 'id', 'type': 'str'},
     }
 
-    def __init__(self, name=None, id=None, **kwargs):
+    def __init__(self, name=None, id=None):
         self.name = name
         self.id = id

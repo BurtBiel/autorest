@@ -114,6 +114,61 @@ namespace Microsoft.Rest.Generator.CSharp
             }
         }
 
+        /// <summary>
+        /// Normalizes the parameter names of a method
+        /// </summary>
+        /// <param name="method"></param>
+        protected override void NormalizeParameters(Method method)
+        {
+            if (method != null)
+            {
+                foreach (var parameter in method.Parameters)
+                {
+                    parameter.Name = method.Scope.GetUniqueName(GetParameterName(parameter.GetClientName()));
+                    parameter.Type = NormalizeTypeReference(parameter.Type);
+                    QuoteParameter(parameter);
+                }
+
+                foreach (var parameterTransformation in method.InputParameterTransformation)
+                {
+                    parameterTransformation.OutputParameter.Name = method.Scope.GetUniqueName(GetParameterName(parameterTransformation.OutputParameter.GetClientName()));
+                    parameterTransformation.OutputParameter.Type = NormalizeTypeReference(parameterTransformation.OutputParameter.Type);
+
+                    QuoteParameter(parameterTransformation.OutputParameter);
+
+                    foreach (var parameterMapping in parameterTransformation.ParameterMappings)
+                    {
+                        if (parameterMapping.InputParameterProperty != null)
+                        {
+                            parameterMapping.InputParameterProperty = GetPropertyName(parameterMapping.InputParameterProperty);
+                        }
+
+                        if (parameterMapping.OutputParameterProperty != null)
+                        {
+                            parameterMapping.OutputParameterProperty = GetPropertyName(parameterMapping.OutputParameterProperty);
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Normalizes the client properties names of a client model
+        /// </summary>
+        /// <param name="client">A client model</param>
+        protected override void NormalizeClientProperties(ServiceClient client)
+        {
+            if (client != null)
+            {
+                foreach (var property in client.Properties)
+                {
+                    property.Name = GetPropertyName(property.GetClientName());
+                    property.Type = NormalizeTypeReference(property.Type);
+                    QuoteParameter(property);
+                }
+            }
+        }
+
         private static void MakeTypeNullable(IType type)
         {
             PrimaryType primaryType = type as PrimaryType;
@@ -182,7 +237,11 @@ namespace Microsoft.Rest.Generator.CSharp
                 return null;
             }
 
-            if (primaryType.Type == KnownPrimaryType.Boolean)
+            if (primaryType.Type == KnownPrimaryType.Base64Url)
+            {
+                primaryType.Name = "byte[]";
+            }
+            else if (primaryType.Type == KnownPrimaryType.Boolean)
             {
                 primaryType.Name = "bool";
             }
@@ -238,6 +297,10 @@ namespace Microsoft.Rest.Generator.CSharp
             {
                 primaryType.Name = "ServiceClientCredentials";
             }
+            else if (primaryType.Type == KnownPrimaryType.UnixTime)
+            {
+                primaryType.Name = "DateTime";
+            }
             else if (primaryType.Type == KnownPrimaryType.Uuid)
             {
                 primaryType.Name = "Guid";
@@ -265,7 +328,7 @@ namespace Microsoft.Rest.Generator.CSharp
 
             foreach (var property in compositeType.Properties)
             {
-                property.Name = GetPropertyName(property.Name);
+                property.Name = GetPropertyName(property.GetClientName());
                 property.Type = NormalizeTypeReference(property.Type);
             }
 
@@ -341,7 +404,9 @@ namespace Microsoft.Rest.Generator.CSharp
                             primaryType.Type == KnownPrimaryType.DateTime ||
                             primaryType.Type == KnownPrimaryType.DateTimeRfc1123 ||
                             primaryType.Type == KnownPrimaryType.TimeSpan ||
-                            primaryType.Type == KnownPrimaryType.ByteArray)
+                            primaryType.Type == KnownPrimaryType.ByteArray ||
+                            primaryType.Type == KnownPrimaryType.Base64Url ||
+                            primaryType.Type == KnownPrimaryType.UnixTime)
                         {
 
                             return "SafeJsonConvert.DeserializeObject<" + primaryType.Name.TrimEnd('?') +

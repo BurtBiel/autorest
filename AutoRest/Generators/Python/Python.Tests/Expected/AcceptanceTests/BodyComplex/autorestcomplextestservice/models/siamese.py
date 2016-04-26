@@ -15,11 +15,17 @@ from .cat import Cat
 class Siamese(Cat):
     """Siamese
 
-    :param int id:
-    :param str name:
-    :param str color:
-    :param list hates:
-    :param str breed:
+    :param id:
+    :type id: int
+    :param name:
+    :type name: str
+    :param color:
+    :type color: str
+    :param hates:
+    :type hates: list of :class:`Dog
+     <fixtures.acceptancetestsbodycomplex.models.Dog>`
+    :param breed:
+    :type breed: str
     """ 
 
     _attribute_map = {
@@ -30,6 +36,6 @@ class Siamese(Cat):
         'breed': {'key': 'breed', 'type': 'str'},
     }
 
-    def __init__(self, id=None, name=None, color=None, hates=None, breed=None, **kwargs):
-        super(Siamese, self).__init__(id=id, name=name, color=color, hates=hates, **kwargs)
+    def __init__(self, id=None, name=None, color=None, hates=None, breed=None):
+        super(Siamese, self).__init__(id=id, name=name, color=color, hates=hates)
         self.breed = breed

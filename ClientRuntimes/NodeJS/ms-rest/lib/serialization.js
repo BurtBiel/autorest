@@ -60,7 +60,7 @@ exports.serialize = function (mapper, object, objectName) {
   if (mapperType.match(/^Sequence$/ig) !== null) payload = [];
   //Throw if required and object is null or undefined
   if (mapper.required && (object === null || object === undefined) && !mapper.isConstant) {
-    throw new Error(util.format('\'%s\' cannot be null or undefined.'), objectName);
+    throw new Error(util.format('\'%s\' cannot be null or undefined.', objectName));
   }
   //Set Defaults
   if ((mapper.defaultValue !== null && mapper.defaultValue !== undefined) && 
@@ -78,6 +78,8 @@ exports.serialize = function (mapper, object, objectName) {
     payload = serializeDateTypes.call(this, mapperType, object, objectName);
   } else if (mapperType.match(/^ByteArray$/ig) !== null) {
     payload = serializeBufferType.call(this, objectName, object);
+  } else if (mapperType.match(/^Base64Url$/ig) !== null) {
+    payload = serializeBase64UrlType.call(this, objectName, object);
   } else if (mapperType.match(/^Sequence$/ig) !== null) {
     payload = serializeSequenceType.call(this, mapper, object, objectName);
   } else if (mapperType.match(/^Dictionary$/ig) !== null) {
@@ -266,8 +268,8 @@ function serializeCompositeType(mapper, object, objectName) {
           continue;
         }
         //serialize the property if it is present in the provided object instance
-        if ((modelProps[key].defaultValue !== null && modelProps[key].defaultValue !== undefined) || 
-          (object[key] !== null && object[key] !== undefined)) {
+        if (((parentObject !== null && parentObject !== undefined) && (modelProps[key].defaultValue !== null && modelProps[key].defaultValue !== undefined)) || 
+            (object[key] !== null && object[key] !== undefined)) {
           var propertyObjectName = objectName + '.' + modelProps[key].serializedName;
           var propertyMapper = modelProps[key];
           var serializedValue = exports.serialize.call(this, propertyMapper, object[key], propertyObjectName);
@@ -315,7 +317,13 @@ function serializeEnumType(objectName, allowedValues, value) {
   if (!allowedValues) {
     throw new Error(util.format('Please provide a set of allowedValues to validate %s as an Enum Type.', objectName));
   }
-  if (!allowedValues.some(function (item) { return item === value; })) {
+  var isPresent = allowedValues.some(function (item) {
+    if (typeof item.valueOf() === 'string') {
+      return item.toLowerCase() === value.toLowerCase();
+    }
+     return item === value;
+  });
+  if (!isPresent) {
     throw new Error(util.format('%s is not a valid value for %s. The valid values are: %s', 
       value, objectName, JSON.stringify(allowedValues)));
   }
@@ -328,6 +336,16 @@ function serializeBufferType(objectName, value) {
       throw new Error(util.format('%s must be of type Buffer.', objectName));
     }
     value = value.toString('base64');
+  }
+  return value;
+}
+
+function serializeBase64UrlType(objectName, value) {
+  if (value !== null && value !== undefined) {
+    if (!Buffer.isBuffer(value)) {
+      throw new Error(util.format('%s must be of type Buffer.', objectName));
+    }
+    value = bufferToBase64Url(value);
   }
   return value;
 }
@@ -388,6 +406,8 @@ exports.deserialize = function (mapper, responseBody, objectName) {
     payload = moment.duration(responseBody);
   } else if (mapperType.match(/^ByteArray$/ig) !== null) {
     payload = new Buffer(responseBody, 'base64');
+  } else if (mapperType.match(/^Base64Url$/ig) !== null) {
+    payload = base64UrlToBuffer(responseBody);
   } else if (mapperType.match(/^Sequence$/ig) !== null) {
     payload = deserializeSequenceType.call(this, mapper, responseBody, objectName);
   } else if (mapperType.match(/^Dictionary$/ig) !== null) {
@@ -539,6 +559,40 @@ function splitSerializeName(prop) {
   });
 
   return classes;
+}
+
+function bufferToBase64Url(buffer) {
+  if (!buffer) {
+    return null;
+  }
+  if (!Buffer.isBuffer(buffer)) {
+    throw new Error('Please provide an input of type Buffer for converting to Base64Url.');
+  }
+  // Buffer to Base64.
+  var str = buffer.toString('base64');
+  // Base64 to Base64Url.
+  return trimEnd(str, '=').replace(/\+/g, '-').replace(/\//g, '_');
+}
+
+function trimEnd(str, ch) {
+  var len = str.length;
+  while ((len - 1) >= 0 && str[len - 1] === ch) {
+    --len;
+  }
+  return str.substr(0, len);
+}
+
+function base64UrlToBuffer(str) {
+  if (!str) {
+    return null;
+  }
+  if (str && typeof str.valueOf() !== 'string') {
+    throw new Error('Please provide an input of type string for converting to Buffer');
+  }
+  // Base64Url to Base64.
+  str = str.replace(/\-/g, '+').replace(/\_/g, '/');
+  // Base64 to Buffer.
+  return new Buffer(str, 'base64');
 }
 
 exports = module.exports;

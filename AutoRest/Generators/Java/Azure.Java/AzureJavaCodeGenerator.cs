@@ -26,7 +26,7 @@ namespace Microsoft.Rest.Generator.Java.Azure
 
         public AzureJavaCodeGenerator(Settings settings) : base(settings)
         {
-            _namer = new AzureJavaCodeNamer();
+            _namer = new AzureJavaCodeNamer(settings.Namespace);
             IsSingleFileGenerationSupported = true;
             pageClasses = new Dictionary<KeyValuePair<string, string>, string>();
         }
@@ -66,22 +66,6 @@ namespace Microsoft.Rest.Generator.Java.Azure
             _namer.ResolveNameCollisions(serviceClient, Settings.Namespace,
                 Settings.Namespace + ".Models");
             _namer.NormalizePaginatedMethods(serviceClient, pageClasses);
-            ExtendAllResourcesToBaseResource(serviceClient);
-        }
-
-        private static void ExtendAllResourcesToBaseResource(ServiceClient serviceClient)
-        {
-            if (serviceClient != null)
-            {
-                foreach (var model in serviceClient.ModelTypes)
-                {
-                    if (model.Extensions.ContainsKey(AzureExtensions.AzureResourceExtension) && 
-                        (bool)model.Extensions[AzureExtensions.AzureResourceExtension])
-                    {
-                        model.BaseModelType = new CompositeType { Name = "BaseResource", SerializedName = "BaseResource" };
-                    }
-                }
-            }
         }
 
         /// <summary>
@@ -110,6 +94,10 @@ namespace Microsoft.Rest.Generator.Java.Azure
             {
                 if (modelType.Extensions.ContainsKey(AzureExtensions.ExternalExtension) &&
                     (bool)modelType.Extensions[AzureExtensions.ExternalExtension])
+                {
+                    continue;
+                }
+                if (modelType.IsResource())
                 {
                     continue;
                 }

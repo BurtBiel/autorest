@@ -15,8 +15,10 @@ from msrest.serialization import Model
 class Datetimerfc1123Wrapper(Model):
     """Datetimerfc1123Wrapper
 
-    :param datetime field:
-    :param datetime now:
+    :param field:
+    :type field: datetime
+    :param now:
+    :type now: datetime
     """ 
 
     _attribute_map = {
@@ -24,6 +26,6 @@ class Datetimerfc1123Wrapper(Model):
         'now': {'key': 'now', 'type': 'rfc-1123'},
     }
 
-    def __init__(self, field=None, now=None, **kwargs):
+    def __init__(self, field=None, now=None):
         self.field = field
         self.now = now

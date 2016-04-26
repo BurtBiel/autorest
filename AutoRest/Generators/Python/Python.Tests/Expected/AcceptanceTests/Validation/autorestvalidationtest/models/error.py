@@ -16,9 +16,12 @@ from msrest.exceptions import HttpOperationError
 class Error(Model):
     """Error
 
-    :param int code:
-    :param str message:
-    :param str fields:
+    :param code:
+    :type code: int
+    :param message:
+    :type message: str
+    :param fields:
+    :type fields: str
     """ 
 
     _attribute_map = {
@@ -27,7 +30,7 @@ class Error(Model):
         'fields': {'key': 'fields', 'type': 'str'},
     }
 
-    def __init__(self, code=None, message=None, fields=None, **kwargs):
+    def __init__(self, code=None, message=None, fields=None):
         self.code = code
         self.message = message
         self.fields = fields

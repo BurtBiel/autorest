@@ -15,12 +15,19 @@ from .fish import Fish
 class Shark(Fish):
     """Shark
 
-    :param str species:
-    :param float length:
-    :param list siblings:
-    :param str fishtype: Polymorphic Discriminator
-    :param int age:
-    :param datetime birthday:
+    :param species:
+    :type species: str
+    :param length:
+    :type length: float
+    :param siblings:
+    :type siblings: list of :class:`Fish
+     <fixtures.acceptancetestsbodycomplex.models.Fish>`
+    :param fishtype: Polymorphic Discriminator
+    :type fishtype: str
+    :param age:
+    :type age: int
+    :param birthday:
+    :type birthday: datetime
     """ 
 
     _validation = {
@@ -42,8 +49,8 @@ class Shark(Fish):
         'fishtype': {'sawshark': 'Sawshark', 'goblin': 'Goblinshark', 'cookiecuttershark': 'Cookiecuttershark'}
     }
 
-    def __init__(self, length, birthday, species=None, siblings=None, age=None, **kwargs):
-        super(Shark, self).__init__(species=species, length=length, siblings=siblings, **kwargs)
+    def __init__(self, length, birthday, species=None, siblings=None, age=None):
+        super(Shark, self).__init__(species=species, length=length, siblings=siblings)
         self.age = age
         self.birthday = birthday
         self.fishtype = 'shark'

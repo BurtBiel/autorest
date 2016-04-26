@@ -15,6 +15,35 @@ To install:
 Release History
 ---------------
 
+2016-03-25 Version 0.2.0
+++++++++++++++++++++++++
+
+**Bugfixes**
+
+- Manage integer enum values (https://github.com/Azure/autorest/pull/879)
+- Add missing application/json Accept HTTP header (https://github.com/Azure/azure-sdk-for-python/issues/553)
+
+**Beheviour changes**
+
+- Needs Autorest > 0.16.0 Nightly 20160324
+
+
+2016-03-21 Version 0.1.3
+++++++++++++++++++++++++
+
+**Bugfixes**
+
+- Deserialisation of generic resource if null in JSON (https://github.com/Azure/azure-sdk-for-python/issues/544)
+
+
+2016-03-14 Version 0.1.2
+++++++++++++++++++++++++
+
+**Bugfixes**
+
+- urllib3 side effect (https://github.com/Azure/autorest/issues/824)
+
+
 2016-03-04 Version 0.1.1
 ++++++++++++++++++++++++
 

@@ -26,7 +26,8 @@ class AutoRestLongRunningOperationTestServiceConfiguration(AzureConfiguration):
     attributes.
 
     :param credentials: Gets Azure subscription credentials.
-    :type credentials: credentials
+    :type credentials: :mod:`A msrestazure Credentials
+     object<msrestazure.azure_active_directory>`
     :param accept_language: Gets or sets the preferred language for the
      response.
     :type accept_language: str
@@ -45,7 +46,9 @@ class AutoRestLongRunningOperationTestServiceConfiguration(AzureConfiguration):
             self, credentials, accept_language='en-US', long_running_operation_retry_timeout=30, generate_client_request_id=True, base_url=None, filepath=None):
 
         if credentials is None:
-            raise ValueError('credentials must not be None.')
+            raise ValueError("Parameter 'credentials' must not be None.")
+        if accept_language is not None and not isinstance(accept_language, str):
+            raise TypeError("Optional parameter 'accept_language' must be str.")
         if not base_url:
             base_url = 'http://localhost'
 

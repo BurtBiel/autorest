@@ -15,9 +15,14 @@ from msrest.serialization import Model
 class ResourceCollection(Model):
     """ResourceCollection
 
-    :param FlattenedProduct productresource:
-    :param list arrayofresources:
-    :param dict dictionaryofresources:
+    :param productresource:
+    :type productresource: :class:`FlattenedProduct
+     <fixtures.acceptancetestsazureresource.models.FlattenedProduct>`
+    :param arrayofresources:
+    :type arrayofresources: list of :class:`FlattenedProduct
+     <fixtures.acceptancetestsazureresource.models.FlattenedProduct>`
+    :param dictionaryofresources:
+    :type dictionaryofresources: dict
     """ 
 
     _attribute_map = {
@@ -26,7 +31,7 @@ class ResourceCollection(Model):
         'dictionaryofresources': {'key': 'dictionaryofresources', 'type': '{FlattenedProduct}'},
     }
 
-    def __init__(self, productresource=None, arrayofresources=None, dictionaryofresources=None, **kwargs):
+    def __init__(self, productresource=None, arrayofresources=None, dictionaryofresources=None):
         self.productresource = productresource
         self.arrayofresources = arrayofresources
         self.dictionaryofresources = dictionaryofresources
